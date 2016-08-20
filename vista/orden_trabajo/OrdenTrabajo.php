@@ -549,7 +549,7 @@ Phx.vista.OrdenTrabajo=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'descripcion',
-				fieldLabel: 'Descripción',
+				fieldLabel: 'Descripción de falla',
 				allowBlank: false,
 				anchor: '100%',
 				gwidth: 300,

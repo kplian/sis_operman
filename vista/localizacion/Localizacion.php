@@ -354,7 +354,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		onBtnMed: function() {
 			var node = this.sm.getSelectedNode();
 			var data = node.attributes;
-			Phx.CP.log(node);
+			console.log('bb',data);
 			if (data) {
 				Phx.CP.loadWindows('../../../sis_mantenimiento/vista/localizacion_med/LocalizacionMed.php', 'Indicadores: ' + node.text, {
 					modal: true,

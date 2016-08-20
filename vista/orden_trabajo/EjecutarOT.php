@@ -48,7 +48,8 @@ Phx.vista.EjecutarOT = {
 				iconCls: 'block',
 				disabled: true,
 				handler: btncloseOT,
-				tooltip: '<b>Cierra la Orden de Trabajo para su revisión</b>'
+				tooltip: '<b>Cierra la Orden de Trabajo para su revisión</b>',
+				scope: this
 			}
 		);
 		this.addButton('btnEjecucionPendienteOT', 
@@ -93,16 +94,21 @@ Phx.vista.EjecutarOT = {
 				this.wUC.show()	
 			}*/
 			//Enciende la bandera de cierre de la OT
-			this.swCerrar=true;
-			this.getComponente('descripcion_causa').allowBlank=false;
-			this.getComponente('comentarios').allowBlank=false;
-			this.getComponente('prevension').allowBlank=false;
-			this.getComponente('accidentes').allowBlank=false;
-			this.getComponente('reclamos').allowBlank=false;
-			this.getComponente('fecha_eje_ini').allowBlank=false;
-			this.getComponente('fecha_eje_fin').allowBlank=false;
+			Ext.Msg.confirm('Confirmación','¿Está seguro de Cerrar la OT?',function(btn){
+				if(btn=='yes'){
+					this.swCerrar=true;
+					this.getComponente('descripcion_causa').allowBlank=false;
+					this.getComponente('comentarios').allowBlank=false;
+					this.getComponente('prevension').allowBlank=false;
+					this.getComponente('accidentes').allowBlank=false;
+					this.getComponente('reclamos').allowBlank=false;
+					this.getComponente('fecha_eje_ini').allowBlank=false;
+					this.getComponente('fecha_eje_fin').allowBlank=false;
+					
+					this.onButtonEdit();
+				}
+			},this);
 			
-			this.onButtonEdit();
 		}
 		
 		function closeOT() {
