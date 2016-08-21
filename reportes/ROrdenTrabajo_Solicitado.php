@@ -20,7 +20,6 @@ require_once dirname(__FILE__).'/pxpReport/Report.php';
         $this->SetXY($x, $y);
         $this->Cell(30, $height, '', 1, 0, 'C', false, '', 0, false, 'T', 'C');
         $this->Image(dirname(__FILE__).'/logo.png', 25, 14, 18);
-        
         $x = $this->GetX();
         $y = $this->GetY();
         $this->SetFontSize(14);
@@ -39,10 +38,10 @@ require_once dirname(__FILE__).'/pxpReport/Report.php';
         $width2 = 23;
         $this->SetXY($x+115, $y);
         $this->setCellPaddings(2);
-        $this->Cell($width1, $height/4, 'Código:', "B", 0, '', false, '', 0, false, 'T', 'C');
+        $this->Cell($width1, $height/4, ''/*'Código:'*/, "", 0, '', false, '', 0, false, 'T', 'C');
         $this->SetFont('','B');
 		$dataset1=$this->getDataSource()->getDataset();
-        $this->Cell($width2, $height/4, $dataset1[0]['nro_sol'], "B", 0, 'C', false, '', 0, false, 'T', 'C');
+        $this->Cell($width2, $height/4, ''/*$dataset1[0]['nro_sol']*/, "", 0, 'C', false, '', 0, false, 'T', 'C');
         
         $this->SetFont('','');
         $y += 5;
@@ -56,9 +55,9 @@ require_once dirname(__FILE__).'/pxpReport/Report.php';
         $y += 5;
         $this->SetXY($x+115, $y);
         $this->setCellPaddings(2);
-        $this->Cell($width1, $height/4, 'Fecha Emision:', "B", 0, '', false, '', 0, false, 'T', 'C');
+        $this->Cell($width1, $height/4, ''/*'Fecha Emision:'*/, "", 0, '', false, '', 0, false, 'T', 'C');
         $this->SetFont('','B');
-        $this->Cell($width2, $height/4, '26/05/2012', "B", 0, 'C', false, '', 0, false, 'T', 'C');
+        $this->Cell($width2, $height/4, ''/*'26/05/2012'*/, "", 0, 'C', false, '', 0, false, 'T', 'C');
         
         $this->SetFont('','');
         $y += 5;
