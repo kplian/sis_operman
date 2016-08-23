@@ -259,7 +259,10 @@ BEGIN
             solord.archivo,
             solord.extension 
             from gem.torden_trabajo_sol solord
-            where solord.id_orden_trabajo_sol='||v_parametros.id_orden_trabajo_sol||' and ';
+            where solord.id_orden_trabajo_sol='||v_parametros.id_orden_trabajo_sol||' 
+            and solord.archivo is not null
+            and solord.extension is not null
+            and ';
       
       --Definicion de la respuesta
       v_consulta:=v_consulta||v_parametros.filtro;
