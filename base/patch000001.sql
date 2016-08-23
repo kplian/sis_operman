@@ -1472,3 +1472,8 @@ CREATE TABLE gem.tmant_predef_item(
 ) INHERITS(pxp.tbase) 
 WITHOUT OIDS;
 /***********************************F-SCP-RCM-GEM-0-10/10/2013*****************************************/
+
+/***********************************I-SCP-RCM-GEM-0-24/08/2016*****************************************/
+alter table gem.tmant_predef
+add constraint tmant_predef_uq_codigo unique(codigo);
+/***********************************F-SCP-RCM-GEM-0-24/08/2016*****************************************/

@@ -74,7 +74,7 @@ Phx.vista.mapaLocalizacion=Ext.extend(Phx.gmapInterfaz,{
 		
 		
 	ubicarPos:function(direc,zoom,n){
-	    
+	    return false;
 	        if( typeof google== 'undefined' ){
 	            //alert('No hay acceso a Internet');
 	            return false;
