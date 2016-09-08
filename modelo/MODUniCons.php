@@ -904,6 +904,7 @@ class MODUniCons extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_uni_cons','id_uni_cons','int4');
 		$this->setParametro('id_plantilla','id_plantilla','int4');
+		$this->setParametro('codigo','codigo','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

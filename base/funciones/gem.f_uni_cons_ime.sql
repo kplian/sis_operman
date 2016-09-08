@@ -1230,7 +1230,7 @@ BEGIN
                           'registrado',
                           upper(g_registros.nombre),
                           'uc',
-                          upper(g_registros.codigo),
+                          upper(v_parametros.codigo),
                           g_registros.id_tipo_equipo,
                           p_id_usuario,
                           now(),

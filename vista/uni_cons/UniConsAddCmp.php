@@ -715,11 +715,29 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
 				width: 250,
 				listWidth: '280',
 				minChars: 2
-			}]
+			}, {
+					xtype: 'textfield',
+					name: 'codigo_uni_cons',
+					fieldLabel: 'Código',
+					allowBlank: false,
+					width:250
+				}]
 		});
 
 		var cmbUC = this.formUC.getForm().findField('id_uni_cons');
 		cmbUC.store.on('exception', this.conexionFailure, this)
+		var codigo = this.formUC.getForm().findField('codigo_uni_cons');
+
+		cmbUC.on('select', function(c, a, d) {
+			if(this.swAdd=='plantilla'){
+				var nodo = this.sm.getSelectedNode();
+				codigo.setValue(nodo.attributes.codigo + '-' + a.data.codigo)
+			} else {
+				var nodo = this.sm.getSelectedNode();
+				//codigo.setValue(nodo.parentNode.attributes.codigo + '-' + nodo.attributes.codigo + '-' + a.data.codigo)
+				codigo.setValue(nodo.attributes.codigo+'-'+a.data.codigo);
+			}
+		}, this);
 
 		this.wUC = new Ext.Window({
 			title: 'Agregar Plantilla',
@@ -754,13 +772,14 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
 			//Phx.CP.loadingShow();
 			var nodo = this.sm.getSelectedNode();
 			var cmbUC = this.formUC.getForm().findField('id_uni_cons');
-			console.log(nodo)
+			var codigo = this.formUC.getForm().findField('codigo_uni_cons');
 
 			Ext.Ajax.request({
 				url: '../../sis_mantenimiento/control/UniCons/addPlantillaAequipo',
 				params: {
 					id_plantilla : cmbUC.getValue(),
-					id_uni_cons : nodo.attributes.id_uni_cons
+					id_uni_cons : nodo.attributes.id_uni_cons,
+					codigo: codigo.getValue()
 				},
 				success: this.successAddPlantilla,
 				failure: this.conexionFailure,
