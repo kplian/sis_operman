@@ -1235,7 +1235,7 @@ BEGIN
                           p_id_usuario,
                           now(),
                           g_registros.id_localizacion,
-                          'raiz',
+                          'rama',
                           v_parametros.id_plantilla,
                             g_registros.herramientas_especiales,
                             g_registros.otros_datos_tec,
