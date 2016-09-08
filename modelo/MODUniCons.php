@@ -322,6 +322,8 @@ class MODUniCons extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	/*****************/
 	
 	function obtenerUniCons() {
 		$this->procedimiento='gem.f_uni_cons_sel';
@@ -781,6 +783,114 @@ class MODUniCons extends MODbase{
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
 
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+	/*function listarUniConsAddCmp(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='gem.f_uni_cons_sel';
+		$this->transaccion='GEM_UCOCMP_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);
+		
+		$this->setParametro('id_uni_cons', 'id_uni_cons', 'int4');
+
+		//Definicion de la lista del resultado del query
+		$this->captura('id_uni_cons','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('estado','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('codigo','varchar');
+		$this->captura('id_tipo_equipo','int4');
+		$this->captura('id_localizacion','int4');
+		
+		$this->captura('tipo_nodo','varchar');
+        $this->captura('id_uni_cons_comp','int4');
+        $this->captura('id_uni_cons_padre','int4');
+        $this->captura('opcional','varchar');
+        $this->captura('cantidad','int4');
+		
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');
+		$this->captura('nombre_tipo_equipo','varchar');
+		$this->captura('text','varchar');
+		$this->captura('incluir_calgen','boolean');
+		$this->captura('id_uni_loc','varchar');
+		$this->captura('herramientas_especiales','varchar');
+		$this->captura('otros_datos_tec','varchar');
+		$this->captura('funcion','varchar');
+		$this->captura('punto_recepcion_despacho','varchar');
+		$this->captura('horas_dia','int4');
+		$this->captura('ficha_tecnica','varchar');
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		//echo $this->consulta;exit;
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}*/
+
+	function listarUniConsAddCmp(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='gem.f_uni_cons_sel';
+		$this->transaccion='GEM_UCOCMP_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+		$this->setCount(false);
+		
+		$this->setParametro('id_padre','id_padre','varchar');
+		$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('id_uni_cons_tmp','id_uni_cons_tmp','integer');
+		
+		$this->setParametro('tipo_nodo','tipo_nodo','varchar');
+
+		//Definicion de la lista del resultado del query
+		$this->captura('id_uni_cons','int4');
+		$this->captura('estado_reg','varchar');
+		$this->captura('estado','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('codigo','varchar');
+		$this->captura('id_tipo_equipo','int4');
+		$this->captura('id_localizacion','int4');
+		
+		$this->captura('tipo_nodo','varchar');
+        $this->captura('id_uni_cons_comp','int4');
+        $this->captura('id_uni_cons_padre','int4');
+        $this->captura('opcional','varchar');
+        $this->captura('cantidad','int4');
+		
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');
+		$this->captura('nombre_tipo_equipo','varchar');
+		$this->captura('text','varchar');
+		$this->captura('incluir_calgen','boolean');
+		$this->captura('id_uni_loc','varchar');
+		$this->captura('herramientas_especiales','varchar');
+		$this->captura('otros_datos_tec','varchar');
+		$this->captura('funcion','varchar');
+		$this->captura('punto_recepcion_despacho','varchar');
+		$this->captura('horas_dia','int4');
+		$this->captura('ficha_tecnica','varchar');
+		
+		
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		//echo $this->consulta;exit;
+		$this->ejecutarConsulta();
+		
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}

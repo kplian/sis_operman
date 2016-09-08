@@ -1440,6 +1440,148 @@ BEGIN
 			return v_consulta;
    
    		end;
+
+  /*********************************    
+  #TRANSACCION:  'GEM_UCOCMP_SEL'
+  #DESCRIPCION: Consulta de datos
+  #AUTOR:   rcm 
+  #FECHA:   13/09/2016
+  ***********************************/
+  /*elsif(p_transaccion='GEM_UCOCMP_SEL')then
+            
+  begin
+        
+    --Sentencia de la consulta
+    v_consulta:='select
+            tuc.id_uni_cons,
+            tuc.estado_reg,
+            tuc.estado,
+            tuc.nombre,
+            tuc.tipo,
+            tuc.codigo,
+            tuc.id_tipo_equipo,
+            tuc.id_localizacion,
+            case when   tuc.tipo_nodo = ''raiz'' then tuc.tipo_nodo||''_''||tuc.estado
+               else     tuc.tipo_nodo
+            end as tipo_nodo,
+            ucc.id_uni_cons_comp,
+            ucc.id_uni_cons_padre,
+            ucc.opcional,
+            ucc.cantidad,
+            tuc.id_usuario_reg,
+            tuc.fecha_reg,
+            tuc.fecha_mod,
+            tuc.id_usuario_mod,                                                
+            usu1.cuenta as usr_reg,
+            usu2.cuenta as usr_mod,
+            eq.nombre as nombre_tipo_equipo,
+            (tuc.nombre||''-[''||tuc.codigo||'']'')::varchar as text,
+            tuc.incluir_calgen,
+            (COALESCE(tuc.id_localizacion,0)||''_''||tuc.id_uni_cons)::varchar as id_uni_loc,
+            tuc.herramientas_especiales,
+            tuc.otros_datos_tec,
+            tuc.funcion,
+            tuc.punto_recepcion_despacho,
+            tuc.horas_dia,
+            tuc.ficha_tecnica
+            from gem.tuni_cons tuc
+            inner join gem.tuni_cons_comp ucc on ucc.id_uni_cons_hijo = tuc.id_uni_cons  and ucc.estado_reg=''activo'' 
+            inner join segu.tusuario usu1 on usu1.id_usuario = tuc.id_usuario_reg
+            left join segu.tusuario usu2 on usu2.id_usuario = tuc.id_usuario_mod
+            left join gem.ttipo_equipo eq on eq.id_tipo_equipo= tuc.id_tipo_equipo
+            where tuc.id_uni_cons = '''||v_parametros.id_uni_cons||'';
+            
+            raise notice '%', v_consulta;
+
+      --Devuelve la respuesta
+      return v_consulta;
+            
+    end;*/
+
+    /*********************************    
+  #TRANSACCION:  'GEM_UCOCMP_SEL'
+  #DESCRIPCION: Consulta de datos
+  #AUTOR:   rcm 
+  #FECHA:   13/09/2016
+  ***********************************/
+  elsif(p_transaccion='GEM_UCOCMP_SEL')then
+            
+  begin
+        
+    if(v_parametros.id_padre = '%') then
+          --v_condicion:='tuc.tipo_nodo=''base'' ';
+          v_condicion:='tuc.id_uni_cons='||v_parametros.id_uni_cons_tmp||' ';
+          --raise exception 'UNO UNO';
+          --v_condicion:='tuc.id_uni_cons ='''||v_parametros.id_unic_cons_tmp||'''';
+            v_join='LEFT';
+    else
+          v_condicion:='ucc.id_uni_cons_padre='||v_parametros.id_padre||' and tuc.tipo_nodo!=''base'' ';
+            v_join='INNER';
+    end if;
+               
+        v_condicion:=v_condicion ||' and tuc.estado_reg=''activo''  and tuc.tipo=''uc''';
+               
+    if v_parametros.tipo_nodo = 'base'  and  v_parametros.tipo = 'uc' and  p_administrador != 1  then
+      v_filtro = p_id_usuario||' = ANY (tuc.id_usuarios) ';
+    else 
+            v_filtro = '  0=0 ';
+    end if;
+        
+      --Sentencia de la consulta
+    v_consulta:='select
+            tuc.id_uni_cons,
+            tuc.estado_reg,
+            tuc.estado,
+            tuc.nombre,
+            tuc.tipo,
+            tuc.codigo,
+            tuc.id_tipo_equipo,
+            tuc.id_localizacion,
+            case when   tuc.tipo_nodo = ''raiz'' then tuc.tipo_nodo||''_''||tuc.estado
+               else     tuc.tipo_nodo
+            end as tipo_nodo,
+            ucc.id_uni_cons_comp,
+            ucc.id_uni_cons_padre,
+            ucc.opcional,
+            ucc.cantidad,
+            tuc.id_usuario_reg,
+            tuc.fecha_reg,
+            tuc.fecha_mod,
+            tuc.id_usuario_mod,                                                
+            usu1.cuenta as usr_reg,
+            usu2.cuenta as usr_mod,
+            eq.nombre as nombre_tipo_equipo,
+            (tuc.nombre||''-[''||tuc.codigo||'']'')::varchar as text,
+            tuc.incluir_calgen,
+            (COALESCE(tuc.id_localizacion,0)||''_''||tuc.id_uni_cons)::varchar as id_uni_loc,
+            tuc.herramientas_especiales,
+            tuc.otros_datos_tec,
+            tuc.funcion,
+            tuc.punto_recepcion_despacho,
+            tuc.horas_dia,
+            tuc.ficha_tecnica
+            from gem.tuni_cons tuc
+            '||v_join||' join gem.tuni_cons_comp ucc on ucc.id_uni_cons_hijo = tuc.id_uni_cons  and ucc.estado_reg=''activo'' 
+            inner join segu.tusuario usu1 on usu1.id_usuario = tuc.id_usuario_reg
+            left join segu.tusuario usu2 on usu2.id_usuario = tuc.id_usuario_mod
+            left join gem.ttipo_equipo eq on eq.id_tipo_equipo= tuc.id_tipo_equipo
+            where  '||v_condicion|| '  and '||v_filtro;
+      
+      --Definicion de la respuesta
+      v_consulta:=v_consulta||' order by tuc.id_uni_cons';
+            
+            raise notice '%', v_consulta;
+      --Devuelve la respuesta
+      return v_consulta;
+
+
+            
+    end;
+
+
+
+
+
 	else
                
     	raise exception 'Transaccion inexistente';

@@ -2035,7 +2035,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	},
 	swAdd:'unicons',
 	onAddSubsist: function() {
-		var nodo = this.sm.getSelectedNode();
+		/*var nodo = this.sm.getSelectedNode();
 		this.swAdd='plantilla';
 		this.formUC.form.reset()
 		if (nodo) {
@@ -2043,7 +2043,18 @@ header("content-type: text/javascript; charset=UTF-8");
 			//this.formUC.getForm().findField('codigo_uni_cons').allowBlanck=true;
 			this.wUC.setTitle('Agregar Plantilla');
 			this.wUC.show()
+		}*/
+
+		var node = this.sm.getSelectedNode();
+		var data = node.attributes;
+		if (data) {
+			Phx.CP.loadWindows('../../../sis_mantenimiento/vista/uni_cons/UniConsAddCmp.php', 'Agregar subsistemas', {
+				modal: true,
+				width: 900,
+				height: 500
+			}, data, this.idContenedor, 'UniConsAddCmp');
 		}
+
 	}
 })
 </script>
