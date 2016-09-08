@@ -939,5 +939,18 @@ class ACTUniCons extends ACTbase{
 
 	}
 
+	/*
+	 * Author: RCM
+	 * Date: 24/09/2016
+	 * Description: Adicionar una plantilla existente a otra plantilla
+	 *  */
+	 	
+	function addPlantillaAequipo(){
+		$this->objFunc=$this->create('MODUniCons');	
+		
+		$this->res=$this->objFunc->addPlantillaAequipo();			
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
 }
 ?>

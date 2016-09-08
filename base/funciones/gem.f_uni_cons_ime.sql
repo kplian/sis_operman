@@ -1158,6 +1158,148 @@ BEGIN
             return v_resp;
 
 		end;
+
+
+  /*******************************************/
+  /*******************************************/
+
+  /*********************************    
+  #TRANSACCION: 'GEM_ADDUCLOC_MOD'
+  #DESCRIPCION: Aumentar planillas a equipos en localizacion
+  #AUTOR:       rcm 
+  #FECHA:       24/09/2016
+  ***********************************/
+    
+     elseif(p_transaccion='GEM_ADDUCLOC_MOD')then
+         BEGIN   
+             
+             
+            
+             /*
+             1) busca los datos del primer nodo raiz
+             2)  los inserta con UC
+             3) busca recursivamente hijos pxp.f_addunicon_recursivo
+             */
+             
+            
+             -- 1) busca los datos del primer nodo raiz
+             
+      FOR g_registros in (
+              select  
+                  tuc.codigo,
+                    tuc.estado,
+                    tuc.id_tipo_equipo,
+                    tuc.nombre,
+                    tuc.tipo_nodo,
+                    tuc.id_uni_cons,
+                    tuc.herramientas_especiales,
+                    tuc.otros_datos_tec,
+                    tuc.funcion,
+                    tuc.punto_recepcion_despacho,
+                    tuc.ficha_tecnica,
+                    tuc.id_localizacion
+                from gem.tuni_cons tuc 
+                where tuc.id_uni_cons = v_parametros.id_plantilla  
+                and tuc.estado_reg='activo'
+      ) LOOP
+               
+                
+                -- 2)  los inserta como UC
+                      
+                       --Sentencia de la insercion
+            v_codigo = g_registros.codigo;
+            insert into gem.tuni_cons (
+                          estado_reg,
+                          estado,
+                          nombre,
+                          tipo,
+                          codigo,
+                          id_tipo_equipo,
+                          id_usuario_reg,
+                          fecha_reg,
+                          id_localizacion,
+                          tipo_nodo,
+                          id_plantilla,
+                          id_usuarios,
+                            herramientas_especiales,
+                            otros_datos_tec,
+                            funcion,
+                            punto_recepcion_despacho,
+                            ficha_tecnica
+                        ) values (
+                          'activo',
+                          'registrado',
+                          upper(g_registros.nombre),
+                          'uc',
+                          upper(g_registros.codigo),
+                          g_registros.id_tipo_equipo,
+                          p_id_usuario,
+                          now(),
+                          g_registros.id_localizacion,
+                          'raiz',
+                          v_parametros.id_plantilla,
+                          '',
+                            g_registros.herramientas_especiales,
+                            g_registros.otros_datos_tec,
+                            g_registros.funcion,
+                            g_registros.punto_recepcion_despacho,
+                            g_registros.ficha_tecnica
+                        ) RETURNING id_uni_cons into v_id_uni_cons;
+                        
+                        
+                     --insertamos la relacion con el nodo relacionador
+                     
+                      --inseta la relacion con el padre    
+                    
+                
+                
+            insert into gem.tuni_cons_comp(
+                        estado_reg,
+                        opcional,
+                        id_uni_cons_padre,
+                        cantidad,
+                        id_uni_cons_hijo,
+                        id_usuario_reg,
+                        fecha_reg,
+                        id_usuario_mod,
+                        fecha_mod
+                        ) values(
+                        'activo',
+                        'no',
+                        v_parametros.v_id_uni_cons,  --padre
+                        '1',
+                        v_id_uni_cons,--hijo
+                        p_id_usuario,
+                        now(),
+                        null,
+                        null
+                        )RETURNING id_uni_cons_comp into v_id_uni_cons_comp; 
+                        
+                   
+           
+                        
+      END LOOP;
+            -- 3) busca recursivamente hijos pxp.f_addunicon_recursivo
+      
+             v_resp_bool = gem.f_addunicon_recursivo(v_parametros.id_plantilla,v_id_uni_cons,p_id_usuario,'raiz',v_codigo);
+             
+            -- 3.1) llamada a la clonacion de datos
+            
+             -- LLAMADA A LA FUNCION CLONAR DATOS UNICONS  PARA 
+                    --  v_id_uni_cons              CLONADO
+                    --  v_parametros.id_uni_cons   ORIGINAL      
+                    --  p_id_usuario
+      
+             v_resp_bool = gem.f_clon_unicons(v_parametros.id_plantilla ,v_id_uni_cons,p_id_usuario);
+          
+      --Definicion de la respuesta
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Duplicado desde plantilla  el uni_con  (id_uni_cons'||v_id_uni_cons||') al equipo'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_uni_cons',v_id_uni_cons::varchar);
+
+            --Devuelve la respuesta
+            return v_resp;
+
+    end;
 		
 	else
      

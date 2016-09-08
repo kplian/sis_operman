@@ -17,15 +17,13 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
     	//llama al constructor de la clase padre
     	Phx.vista.UniConsAddCmp.superclass.constructor.call(this,config);
     	
-    	//
-		this.addButton('btnBlock', {
+    	this.addButton('btnAddPlantilla', {
 				text : '',
-				iconCls : 'block',
+				iconCls : 'bengineadd',
 				disabled : true,
-				handler : this.onBtnBlock,
-				tooltip : '<b>Bloquear</b><br/>Bloquea la edición del equipo'
-			});
-			
+				handler : this.onBtnAddPlantilla,
+				tooltip : '<b>Agregar Plantilla</b><br/>Permite agregar una plantilla ya existente.'
+		});
 			
 		//para definir atributos del equipo	
 		this.addButton('btnAtrib', {
@@ -36,14 +34,6 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
 				tooltip : '<b>Variables de Medición</b><br/>Define las variables del equipo'
 		});
 		
-		/*this.addButton('btn_MedicionGraf',{
-			text:'Mediciones/Indicadores',
-			iconCls: 'blist',
-			disabled: false,
-			handler:this.btn_MedicionGraf,
-			tooltip: '<b>Mediciones/Indicadores</b><br/>Detalle de las mediciones / Indicadores'
-			}
-		);*/		
         this.addButton('btnUpload',{
            text :'',
            iconCls : 'bupload',
@@ -60,13 +50,13 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
             tooltip : '<b>Repuestos/Proveedores</b><br/>Registro de Repuestos y Proveedores del Equipo'
         });
         
-        /*this.addButton('btnProveedores',{
+        this.addButton('btnProveedores',{
             text : '',
             iconCls : 'bassign',
             disabled : true,
             handler : this.onButtonProv,
             tooltip : '<b>Proveedores</b><br/>Registro de proveedores del equipo'
-        });*/
+        });
 		
 		//Incluye un menú
    		this.menuOp = new Ext.Toolbar.SplitButton({
@@ -91,19 +81,10 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
 		this.addButton('btnDocTecnica', {
 				text : '',
 				iconCls : 'bdocuments',
-				disabled : false,
+				disabled : true,
 				handler : this.onBtnDocTecnica,
 				tooltip : '<b>Documentación Técnica</b><br/>Define la documentación técnica.'
 		});
-		
-		this.addButton('btnAddPlantilla', {
-				text : '',
-				iconCls : 'bengineadd',
-				disabled : false,
-				handler : this.onBtnAddPlantilla,
-				tooltip : '<b>Agregar Plantilla</b><br/>Permite agregar una plantilla ya existente.'
-		});
-    	
    		
    		this.loaderTree.baseParams={tipo:'uc',id_uni_cons_tmp: this.maestro.id_uni_cons};
 		this.init();
@@ -495,54 +476,19 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
 	
 	preparaMenu:function(n){
 	    Phx.vista.UniConsAddCmp.superclass.preparaMenu.call(this,n);
-	    this.tbar.items.get('b-new-' + this.idContenedor).enable();
 		var tiponodo = n.attributes.tipo_nodo;
-			//si es una nodo tipo carpeta habilitamos la opcion de nuevo	
-			if((tiponodo == 'raiz_borrador' || tiponodo == 'raiz_aprobado' )&& n.attributes.id != 'id'){
-			    this.getBoton('btnBlock').enable();	
-                if(tiponodo == 'raiz_aprobado'){
-					this.getBoton('btnBlock').setIconClass('bunlock'); 
-		            this.getBoton('btnBlock').setTooltip('<p>Desbloquear permite editar</p>');
-		            this.getBoton('btnUpload').enable();
-                    this.getBoton('btnItems').enable();
-                    //this.getBoton('btnProveedores').enable();
-                    this.getBoton('btnAtrib').enable();
-                    this.tbar.items.get('b-new-' + this.idContenedor).disable();
-                    this.tbar.items.get('b-edit-' + this.idContenedor).disable();
-                    this.tbar.items.get('b-del-' + this.idContenedor).disable(); 
-		        }
-				else{
-					this.getBoton('btnBlock').setIconClass('block'); 
-		            this.getBoton('btnBlock').setTooltip('<p>Bloquea la edición del equipo</p>');
-		            this.getBoton('btnUpload').enable();
-                    this.getBoton('btnItems').enable();
-                    //this.getBoton('btnProveedores').enable();
-                    this.getBoton('btnAtrib').enable();                     
-				}			
-				
-			}
-			else {
-			    if(tiponodo=='base'){
-    				this.getBoton('btnBlock').disable();
-                    this.getBoton('btnUpload').disable();
-                    this.getBoton('btnItems').disable();
-                    //this.getBoton('btnProveedores').disable();
-                    this.getBoton('btnAtrib').disable();
-                }
-                else{
-                    this.tbar.items.get('b-new-' + this.idContenedor).disable();
-                    this.getBoton('btnBlock').disable();
-                    this.getBoton('btnUpload').enable();
-                    this.getBoton('btnItems').enable();
-                    //this.getBoton('btnProveedores').enable();
-                    this.getBoton('btnAtrib').enable();
-                }                
-			}
-			// llamada funcion clace padre
-			
-		
+
+		// llamada funcion clase padre
+		this.getBoton('btnUpload').enable();
+        this.getBoton('btnItems').enable();
+        this.getBoton('btnProveedores').enable();
+        this.getBoton('btnAtrib').enable();
+        this.getBoton('btnAddPlantilla').enable();
+        this.tbar.items.get('b-edit-' + this.idContenedor).enable();
+        this.tbar.items.get('b-del-' + this.idContenedor).enable(); 
 		this.tbar.items.get('b-new-' + this.idContenedor).enable();	
-		},
+
+	},
 	
 	onButtonNew:function(){
 		var node = this.sm.getSelectedNode();
@@ -811,7 +757,7 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
 			console.log(nodo)
 
 			Ext.Ajax.request({
-				url: '../../sis_mantenimiento/control/UniCons/addPlantilla',
+				url: '../../sis_mantenimiento/control/UniCons/addPlantillaAequipo',
 				params: {
 					id_plantilla : cmbUC.getValue(),
 					id_uni_cons : nodo.attributes.id_uni_cons
