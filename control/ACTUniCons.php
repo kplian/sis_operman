@@ -408,7 +408,7 @@ class ACTUniCons extends ACTbase{
 		$this->objParam->addParametro('id_uni_cons_padre', $idUniCons);
 		//$this->objParam->addFiltro(" ficha_tecnica = ''Si''");
 		$this->objFunc = $this->create('MODUniCons');
-		$resultHijos = $this->objFunc->listarUniConsHijos($this->objParam);
+		$resultHijos = $this->objFunc->listarUniConsHijosRec($this->objParam);
 		$arrayHijos = array();
 		//var_dump($resultHijos->getDatos());exit;
 		$r=0;

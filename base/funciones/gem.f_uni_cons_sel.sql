@@ -1271,8 +1271,8 @@ BEGIN
             tuc.codigo || '' - '' ||tuc.nombre as desc_equipo
             from gem.tuni_cons tuc
             inner join segu.tusuario usu1 on usu1.id_usuario = tuc.id_usuario_reg
-            left join segu.tusuario usu2 on usu2.id_usuario = tuc.id_usuario_mod
-                        left join gem.ttipo_equipo eq on eq.id_tipo_equipo= tuc.id_tipo_equipo
+            left join segu.tusuario usu2 on usu2.id_usuario = tuc.id_usuaPrio_mod
+                        left join gem.ttipo_equipo eq on eq.id_tipo_equi``po= tuc.id_tipo_equipo
                         left join gem.tlocalizacion loc on loc.id_localizacion = tuc.id_localizacion
                 where tuc.tipo = '''||v_tipo||'''
                 and tuc.estado_reg = ''activo'' and (tuc.tipo_nodo = ''raiz'' or tuc.tipo_nodo = ''rama'') and (tuc.estado=''aprobado'' or tuc.estado=''registrado'') and ';
@@ -1578,7 +1578,52 @@ BEGIN
             
     end;
 
+    /*********************************
+    #TRANSACCION: 'GEM_TUCHIJOSREC_SEL'
+    #DESCRIPCION: obtiene los hijos de una unidad constructiva en su primer nivel
+    #AUTOR: RCM
+    #FECHA: 30/09/2016
+    ***********************************/
 
+    elsif(p_transaccion='GEM_TUCHIJOSREC_SEL')then
+         
+         begin
+         --Sentencia de la consulta
+          v_consulta:='WITH RECURSIVE t(id,id_fk,codigo,nombre,tipo,estado,tipo_nodo,id_localizacion,ficha_tecnica,id_tipo_equipo,n) AS (
+                          SELECT l.id_uni_cons,l.id_uni_cons,l.codigo,l.nombre,l.tipo,l.estado,l.tipo_nodo,
+                          l.id_localizacion,l.ficha_tecnica,l.id_tipo_equipo,1
+                          FROM gem.tuni_cons l 
+                          WHERE l.id_uni_cons = '||v_parametros.id_uni_cons||'
+                          UNION ALL
+                          SELECT l.id_uni_cons_hijo,l.id_uni_cons_padre, u.codigo,u.nombre,u.tipo,u.estado,u.tipo_nodo,
+                          u.id_localizacion,u.ficha_tecnica,u.id_tipo_equipo,n+1
+                          FROM gem.tuni_cons_comp l, t, gem.tuni_cons u
+                          WHERE l.id_uni_cons_padre = t.id
+                          and u.id_uni_cons = l.id_uni_cons_hijo
+                      )
+                      select
+                      t.id as id_uni_cons,t.codigo,t.nombre,t.tipo,t.estado,t.tipo_nodo,
+                      loc.codigo as cod_localizacion,
+                      loc.nombre as nombre_localizacion,
+                      loc.ubicacion as ubicacion,
+                      teq.codigo as codigo_tipo_equipo,
+                      teq.nombre as nombre_tipo_equipo,
+                      t.ficha_tecnica
+                      from t
+                      left join gem.tlocalizacion loc
+                      on loc.id_localizacion = t.id_localizacion
+                      left join gem.ttipo_equipo teq 
+                      on teq.id_tipo_equipo = t.id_tipo_equipo
+                      order by t.n';
+                      
+          --Definicion de la respuesta        
+      --v_consulta:=v_consulta||v_parametros.filtro;
+                      
+          raise notice '%',v_consulta;
+
+        --Devuelve la respuesta
+        return v_consulta;
+    end;
 
 
 

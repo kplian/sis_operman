@@ -913,6 +913,33 @@ class MODUniCons extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function listarUniConsHijosRec() {
+		$this->procedimiento='gem.f_uni_cons_sel';
+		$this->transaccion='GEM_TUCHIJOSREC_SEL';
+		$this->tipo_procedimiento="SEL";
+		
+		$this->setParametro('id_uni_cons_padre', 'id_uni_cons_padre', 'int4');
+		
+		$this->captura('id_uni_cons','int4');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('estado','varchar');
+		$this->captura('tipo_nodo','varchar');
+		$this->captura('cod_localizacion','varchar');
+		$this->captura('nombre_localizacion','varchar');
+		$this->captura('ubicacion','varchar');
+		$this->captura('codigo_tipo_equipo','varchar');
+		$this->captura('nombre_tipo_equipo','varchar');
+		$this->captura('ficha_tecnica','varchar');
+		
+		$this->armarConsulta();
+		//echo $this->consulta;exit;
+		$this->ejecutarConsulta();
+		
+		return $this->respuesta;
+	}
 	
 }
 ?>
