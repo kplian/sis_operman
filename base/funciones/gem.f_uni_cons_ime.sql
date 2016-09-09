@@ -928,37 +928,67 @@ BEGIN
 
 		begin
         
-           --0)  verifica el estado solo puede eliminar cuando el estado es borrador
-           if exists ( select DISTINCT 1 
-                          from gem.tuni_cons uc
-                          where uc.estado != 'borrador' 
-                          and   uc.id_uni_cons = v_parametros.id_uni_cons) then
-               
-                             
-                        raise exception 'Eliminacion no realizada. El elemento que quiere eliminar no se encuentra en estado borrador';
+          --0)  verifica el estado solo puede eliminar cuando el estado es borrador
+          if exists ( select DISTINCT 1 
+                    from gem.tuni_cons uc
+                    where uc.estado != 'borrador' 
+                    and uc.id_uni_cons = v_parametros.id_uni_cons
+                    and uc.tipo = 'tuc') then
+              raise exception 'Eliminacion no realizada. El elemento que quiere eliminar no se encuentra en estado borrador';
               
-              end if;
-           
-               
-        
-        
+          end if;
+
             --1) verificamos si tiene relaciones activas con sus hijos (asumimos que si tiene hijos tendra relaciones activas con ellos)
-            
             if exists ( select DISTINCT 1 
-                          from gem.tuni_cons uc
-                          inner join  gem.tuni_cons_comp ucc  on uc.id_uni_cons = ucc.id_uni_cons_padre   and ucc.estado_reg='activo' 
-                          where uc.id_uni_cons = v_parametros.id_uni_cons) then
+                        from gem.tuni_cons uc
+                        inner join  gem.tuni_cons_comp ucc on uc.id_uni_cons = ucc.id_uni_cons_padre   and ucc.estado_reg='activo' 
+                        where uc.id_uni_cons = v_parametros.id_uni_cons) then
                
                         --NOTA) sera necesario adicionar  una trsaccion que realize una eliminacion recursiva
                         --      previa confirmacion del usuario despues de este error 
-                             
                         raise exception 'Eliminacion no realizada. El elemento que quiere eliminar tienes subpartes anidadas';
-              
               end if;
+
+              --RCM> 10-04-2016: inactivacion recursiva
+              update gem.tuni_cons set
+              estado_reg='inactivo'
+              where id_uni_cons in (WITH RECURSIVE t(id,id_fk,id_localizacion,id_uni_cons_comp,n) AS (
+                                      SELECT l.id_uni_cons,l.id_uni_cons,l.id_localizacion,0,1
+                                      FROM gem.tuni_cons l 
+                                      WHERE l.id_uni_cons = v_parametros.id_uni_cons
+                                      UNION ALL
+                                      SELECT l.id_uni_cons_hijo,l.id_uni_cons_padre, u.id_localizacion,l.id_uni_cons_comp,n+1
+                                      FROM gem.tuni_cons_comp l, t, gem.tuni_cons u
+                                      WHERE l.id_uni_cons_padre = t.id
+                                      and u.id_uni_cons = l.id_uni_cons_padre
+                                  )
+                                  select
+                                  id
+                                  from t);
+
+              --RCM> 10-04-2016: inactivacion recursiva
+              update gem.tuni_cons_comp set
+              estado_reg='inactivo'
+              where id_uni_cons_comp in (WITH RECURSIVE t(id,id_fk,id_localizacion,id_uni_cons_comp,n) AS (
+                                      SELECT l.id_uni_cons,l.id_uni_cons,l.id_localizacion,0,1
+                                      FROM gem.tuni_cons l 
+                                      WHERE l.id_uni_cons = v_parametros.id_uni_cons
+                                      UNION ALL
+                                      SELECT l.id_uni_cons_hijo,l.id_uni_cons_padre, u.id_localizacion,l.id_uni_cons_comp,n+1
+                                      FROM gem.tuni_cons_comp l, t, gem.tuni_cons u
+                                      WHERE l.id_uni_cons_padre = t.id
+                                      and u.id_uni_cons = l.id_uni_cons_padre
+                                  )
+                                  select
+                                  id_uni_cons_comp
+                                  from t);
+
+
+
               
                              
                --2) inactiva la unidad
-               update gem.tuni_cons 
+               /*update gem.tuni_cons 
                set estado_reg='inactivo'
                where id_uni_cons= v_parametros.id_uni_cons;
                
@@ -966,7 +996,7 @@ BEGIN
                -- 3) inactiva las relaciones con los padres (para que se cumpla siempre la regla en 1)
                update gem.tuni_cons_comp
                set estado_reg='inactivo'
-               where id_uni_cons_hijo=v_parametros.id_uni_cons;
+               where id_uni_cons_hijo=v_parametros.id_uni_cons;*/
               
   
 		               
