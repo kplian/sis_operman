@@ -52,7 +52,8 @@ DECLARE
     v_cod boolean;
     
     v_id_usuarios_tmp integer[];
-	v_horas_dia integer;
+	  v_horas_dia integer;
+    v_id_localizacion integer;
    
 BEGIN
 
@@ -1196,18 +1197,21 @@ BEGIN
                     tuc.otros_datos_tec,
                     tuc.funcion,
                     tuc.punto_recepcion_despacho,
-                    tuc.ficha_tecnica,
-                    tuc.id_localizacion
+                    tuc.ficha_tecnica --,
+                    --tuc.id_localizacion
                 from gem.tuni_cons tuc 
                 where tuc.id_uni_cons = v_parametros.id_plantilla  
                 and tuc.estado_reg='activo'
       ) LOOP
                
+          --Obtiene la localizacion del equipo
+          select id_localizacion into v_id_localizacion from gem.tuni_cons where id_uni_cons = v_parametros.id_uni_cons;
                 
                 -- 2)  los inserta como UC
                       
                        --Sentencia de la insercion
             v_codigo = g_registros.codigo;
+            --raise exception 'id_localizacion: %',g_registros.id_localizacion;
             insert into gem.tuni_cons (
                           estado_reg,
                           estado,
@@ -1234,7 +1238,7 @@ BEGIN
                           g_registros.id_tipo_equipo,
                           p_id_usuario,
                           now(),
-                          g_registros.id_localizacion,
+                          v_id_localizacion,
                           'rama',
                           v_parametros.id_plantilla,
                             g_registros.herramientas_especiales,

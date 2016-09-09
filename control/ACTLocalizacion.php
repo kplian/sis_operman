@@ -41,8 +41,6 @@ class ACTLocalizacion extends ACTbase{
 		
 	
 		if($tipo_nodo != 'uni_cons' && $tipo_nodo != 'uni_cons_f' && $tipo_nodo != 'rama'){
-			//echo 'aaaaaaaaaaaa: '.$tipo_nodo;exit;
-			
 					if($node=='id'){
 						$this->objParam->addParametro('id_padre','%');
 					}
@@ -50,7 +48,6 @@ class ACTLocalizacion extends ACTbase{
 						$this->objParam->addParametro('id_padre',$id_localizacion);
 					}
 
-					
 		            
 		            $this->objFunc=$this->create('MODLocalizacion');
 					$this->res=$this->objFunc->listarLocalizacionArb($this->objParam);
@@ -158,7 +155,7 @@ class ACTLocalizacion extends ACTbase{
 				 												$arreglo);
 																
 		   													
-		      
+/*		      
 		      
 		      	$this->res->addNivelArbol('tipo_nodo','raiz_borrador',array('leaf'=>false,
 																'allowDelete'=>true,
@@ -180,8 +177,8 @@ class ACTLocalizacion extends ACTbase{
 				 												$arreglo);
 				
 				array_push($arreglo,array('nombre'=>'cls','valor'=>'descripcion'));
-				/*se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
-				es importante que entre los resultados devueltos por la base exista la variable tipo_dato que tenga el valor en texto = 'hoja' */
+				//se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
+				//es importante que entre los resultados devueltos por la base exista la variable tipo_dato que tenga el valor en texto = 'hoja' 
 				 														
 		
 				$this->res->addNivelArbol('tipo_nodo','rama',array(
@@ -190,6 +187,22 @@ class ACTLocalizacion extends ACTbase{
 																'allowEdit'=>true,
 				 												'icon'=>'../../../lib/imagenes/a_form.png'),
 				 												$arreglo);
+*/
+				$this->res->addNivelArbol('tipo_nodo','rama',array('leaf'=>false,
+																	'allowDelete'=>false,
+																	'allowEdit'=>false,
+					 												'cls'=>'folder',
+					 												'icon'=>'../../../lib/imagenes/otros/tuc.png'
+					 												),
+					 												$arreglo);
+				
+				   $this->res->addNivelArbol('tipo_nodo','rama',array('leaf'=>false,
+																	'allowDelete'=>false,
+																	'allowEdit'=>false,
+					 												'cls'=>'folder',
+					 												'icon'=>'../../../lib/imagenes/otros/tucred.png'
+					 												),
+					 												$arreglo);
 				 												
 				//Se imprime el arbol en formato JSON
 				echo $this->res->generarJson(); exit;
