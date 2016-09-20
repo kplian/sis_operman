@@ -540,7 +540,8 @@ Phx.vista.UniConsAddCmp=Ext.extend(Phx.arbInterfaz,{
 			}
 			// llamada funcion clace padre
 			
-			
+		
+		this.tbar.items.get('b-new-' + this.idContenedor).enable();	
 		},
 	
 	onButtonNew:function(){
