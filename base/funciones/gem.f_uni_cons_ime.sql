@@ -1264,7 +1264,7 @@ BEGIN
                         ) values(
                         'activo',
                         'no',
-                        v_parametros.v_id_uni_cons,  --padre
+                        v_parametros.id_uni_cons,  --padre
                         '1',
                         v_id_uni_cons,--hijo
                         p_id_usuario,
