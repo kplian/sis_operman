@@ -1286,7 +1286,7 @@ BEGIN
       	v_consulta = v_consulta || v_cond;
       end if;
       v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-      raise notice '%',v_consulta;
+      raise exception '%',v_consulta;
       --Devuelve la respuesta
       return v_consulta;
             
