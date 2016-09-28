@@ -1275,7 +1275,7 @@ BEGIN
                         left join gem.ttipo_equipo eq on eq.id_tipo_equipo= tuc.id_tipo_equipo
                         left join gem.tlocalizacion loc on loc.id_localizacion = tuc.id_localizacion
                 where tuc.tipo = '''||v_tipo||'''
-                and tuc.estado_reg = ''activo'' and (tuc.tipo_nodo = ''raiz'' or tuc.tipo_nodo = ''uc'') and (tuc.estado=''aprobado'' or tuc.estado=''registrado'') and ';
+                and tuc.estado_reg = ''activo'' and (tuc.tipo_nodo = ''raiz'' or tuc.tipo_nodo = ''rama'') and (tuc.estado=''aprobado'' or tuc.estado=''registrado'') and ';
            if pxp.f_existe_parametro(p_tabla,'id_localizacion') then
            		v_consulta = v_consulta ||' tuc.id_localizacion in (' || v_ids_loc ||') and ';
            end if;
