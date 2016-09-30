@@ -1271,7 +1271,7 @@ BEGIN
             tuc.codigo || '' - '' ||tuc.nombre as desc_equipo
             from gem.tuni_cons tuc
             inner join segu.tusuario usu1 on usu1.id_usuario = tuc.id_usuario_reg
-            left join segu.tusuario usu2 on usu2.id_usuario = tuc.id_usuaPrio_mod
+            left join segu.tusuario usu2 on usu2.id_usuario = tuc.id_usuario_mod
                         left join gem.ttipo_equipo eq on eq.id_tipo_equi``po= tuc.id_tipo_equipo
                         left join gem.tlocalizacion loc on loc.id_localizacion = tuc.id_localizacion
                 where tuc.tipo = '''||v_tipo||'''
