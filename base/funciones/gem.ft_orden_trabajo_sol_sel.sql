@@ -105,7 +105,7 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = solord.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = solord.id_usuario_mod
 						inner join orga.vfuncionario funsol on funsol.id_funcionario = solord.id_solicitante
-						inner join gem.tlocalizacion locali on locali.id_localizacion = solord.id_localizacion
+						left join gem.tlocalizacion locali on locali.id_localizacion = solord.id_localizacion
 						inner join gem.tuni_cons unicon on unicon.id_uni_cons = solord.id_uni_cons
 						left join orga.vfuncionario funres on funres.id_funcionario = solord.id_responsable
 						left join param.tunidad_medida unimed on unimed.id_unidad_medida = solord.id_unidad_medida_req
@@ -184,7 +184,7 @@ BEGIN
 						inner join segu.tusuario usu1 on usu1.id_usuario = solord.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = solord.id_usuario_mod
 						inner join orga.vfuncionario funsol on funsol.id_funcionario = solord.id_solicitante
-						inner join gem.tlocalizacion locali on locali.id_localizacion = solord.id_localizacion
+						left join gem.tlocalizacion locali on locali.id_localizacion = solord.id_localizacion
 						inner join gem.tuni_cons unicon on unicon.id_uni_cons = solord.id_uni_cons
 						left join orga.vfuncionario funres on funres.id_funcionario = solord.id_responsable
 						left join param.tunidad_medida unimed on unimed.id_unidad_medida = solord.id_unidad_medida_req
