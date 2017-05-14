@@ -13,6 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
 Phx.vista.EquipoVariable=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
+		console.log('aqui llego')
 		this.maestro=config;
     	//llama al constructor de la clase padre
 		Phx.vista.EquipoVariable.superclass.constructor.call(this,config);
@@ -300,6 +301,7 @@ Phx.vista.EquipoVariable=Ext.extend(Phx.gridInterfaz,{
 	id_store:'id_equipo_variable',
 	
 	onReloadPage:function(m){
+		console.log('reload')
         this.maestro=m;
 		this.Atributos[1].valorInicial=this.maestro.id_uni_cons;
 		

@@ -303,7 +303,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			if (nodo) {
 				this.formUC.getForm().findField('codigo_uni_cons').show();
 				this.formUC.getForm().findField('codigo_uni_cons').allowBlanck=false;
-				this.wUC.setTitle('Agregar Equipo');
+				this.wUC.setTitle('Agregar Vehículo');
 				this.wUC.show()
 			}
 		},
@@ -354,7 +354,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		onBtnMed: function() {
 			var node = this.sm.getSelectedNode();
 			var data = node.attributes;
-			console.log('bb',data);
 			if (data) {
 				Phx.CP.loadWindows('../../../sis_mantenimiento/vista/localizacion_med/LocalizacionMed.php', 'Indicadores: ' + node.text, {
 					modal: true,
@@ -393,7 +392,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var node = this.sm.getSelectedNode();
             var data = node.attributes;
             if (data){
-                Phx.CP.loadWindows('../../../sis_mantenimiento/vista/uni_cons/UniConsInvent.php', 'Inventario Equipos' + node.text, {
+                Phx.CP.loadWindows('../../../sis_mantenimiento/vista/uni_cons/UniConsInvent.php', 'Inventario Vehículos' + node.text, {
                     modal : true,
                     width : 900,
                     height : 400
@@ -1197,66 +1196,75 @@ header("content-type: text/javascript; charset=UTF-8");
 				id: 'mni-indicad-'+this.idContenedor,
 				text: 'Indicadores de Clase Mundial',
 				handler: this.onBtnMed,
-				scope: this
+				scope: this,
+				hidden: true
 			});
 			
             this.ctxMenu.addMenuItem({
                 id: 'mni-repInd-'+this.idContenedor,
                 text : 'Reporte Indicadores Mtto Mes',
                 handler : this.onBtnRepInd,
-                scope : this
+                scope : this,
+                hidden: true
             });
             
             this.ctxMenu.addMenuItem({
                 id: 'mni-repAnualInd-'+this.idContenedor,
                 text : 'Reporte Indicadores Mtto Anual',
                 handler : this.onBtnRepAnualInd,
-                scope : this
+                scope : this,
+                hidden: true
             });
             
             this.ctxMenu.addMenuItem({
                 id: 'mni-repInvent-'+this.idContenedor,
-                text: 'Reporte Inventario de Equipos',
+                text: 'Reporte Inventario de Vehículos',
                 handler: this.onBtnRepInvent,
-                scope: this
+                scope: this,
+                hidden: true
             });
             
             this.ctxMenu.addMenuItem({
                 id: 'mni-grafInd-'+this.idContenedor,
                 text : 'Reporte Indicadores Tareas Mtto.',
                 handler : this.onBtnGrafInd,
-                scope : this
+                scope : this,
+                hidden: true
             });
             
 			this.ctxMenu.addMenuItem({
 				id: 'mni-tarTPM-'+this.idContenedor,
 				text: 'Control Tarjetas TPM',
 				handler: this.onBtnTarjetasTPM,
-				scope: this
+				scope: this,
+				hidden: true
 			});
 
-			this.ctxMenu.add('-');			
+			//this.ctxMenu.add('-');			
 			this.ctxMenu.addMenuItem({
 				id: 'mni-consolEqMed-'+this.idContenedor,
 				text: 'Reporte consolidado vehiculos',
 				handler: this.onConsolEqMed,
-				scope: this
+				scope: this,
+				hidden: true
 			});
 			//Detalle consolidación de mediciones
 			this.ctxMenu.addMenuItem({
 				id: 'mni-detConsolMed-' + this.idContenedor,
 				text: 'Detalle Mediciones Consolidadas',
 				handler: this.onBtnDetConsolMed,
-				scope: this
+				scope: this,
+				hidden: true
 			});
 			this.ctxMenu.addMenuItem({
 				id: 'mni-detFichaTecVar-' + this.idContenedor,
 				text: 'Reporte Operativo Vehiculos',
 				handler: this.onBtnFichaTecVar,
-				scope: this
+				scope: this,
+				hidden: true
 			});
 			//Sincronización de usuarios
-			this.ctxMenu.add('-');
+			//this.ctxMenu.add('-');
 			this.ctxMenu.addMenuItem({
 				id: 'mni-usuSinc-' + this.idContenedor,
 				text: 'Sincronizar usuarios',
@@ -1264,22 +1272,24 @@ header("content-type: text/javascript; charset=UTF-8");
 				scope: this
 			});
 			//Grupo de opciones para Equipos
-			this.ctxMenu.add('-');
+			//this.ctxMenu.add('-');
 			this.ctxMenu.addMenuItem({
 				id: 'mni-incCalen-' + this.idContenedor,
 				text: 'Incluir/Excluir para Mantenimiento',
 				handler: this.onBtnIncluCalGen,
-				scope: this
+				scope: this,
+				hidden: true
 			});
 			this.ctxMenu.addMenuItem({
 				id: 'mni-addEqu-' + this.idContenedor,
-				text: 'Agregar Equipo',
+				text: 'Agregar Vehículo',
 				handler: this.onBtnAddEquipo,
 				scope: this
 			});
 			this.ctxMenu.addMenuItem({
 				id:'mni-equipos-'+this.idContenedor,
-				text: 'Equipos',
+				text: 'Vehículos',
+				hidden: true,
 				menu: {
 					items: [{
 						id:'mni-addSubsist-'+this.idContenedor,
@@ -1348,6 +1358,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.ctxMenu.addMenuItem({
 				id: 'ctx-PlaMan-' + this.idContenedor,
 				text: 'Planificación del Mantenimiento',
+				hidden: true,
 				menu: {
 					items: [
 					{
@@ -1378,6 +1389,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				text: 'Indicadores',
 				handler: this.onBtnMed,
 				disabled: true,
+				hidden: true,
 				scope: this,
 				menu:{
 				items: [{
@@ -1419,15 +1431,16 @@ header("content-type: text/javascript; charset=UTF-8");
 				iconCls: 'blist',
 				disabled: true,
 				handler: this.onBtnIncluCalGen,
-				tooltip: '<b>Considerar o no</b><br/>si la unidad es roja no se la considera en la generacion del calendario'
+				tooltip: '<b>Considerar o no</b><br/>si la unidad es roja no se la considera en la generacion del calendario',
+				hidden: true
 			});
 			
 			this.addButton('btn-addEqu', {
-				text: 'Agregar Equipo',
+				text: 'Agregar Vehículo',
 				iconCls: 'bgear',
 				disabled: true,
 				handler: this.onBtnAddEquipo,
-				tooltip: '<b>Agregar Equipo</b><br/>Agrega un equipo desde una plantilla en la Localización seleccionada'
+				tooltip: '<b>Agregar Vehículo</b><br/>Agrega un vehículo desde una plantilla en la Localización seleccionada'
 			});
 			
 			this.menuEq = new Ext.Toolbar.SplitButton({
@@ -1443,21 +1456,24 @@ header("content-type: text/javascript; charset=UTF-8");
 					disabled: true,
 					tooltip: '<b>Mantenimientos Predefinidos</b>',
 					handler:this.onEqMantClick,
-					scope: this
+					scope: this,
+					hidden: true
 				}, {
 					id:'btn-medVar-' + this.idContenedor,
 					text: 'Medición de Variables',
 					disabled: true,
 					tooltip: '<b>Medición de Variables</b>',
 					handler:this.onClickMed,
-					scope: this
+					scope: this,
+					hidden: false
 				}, {
 					id:'btn-upArch-' + this.idContenedor,
 					text: 'Upload Archivos',
 					disabled: true,
 					handler: this.onClickUp,
 					tooltip: '<b>Upload archivos</b>',
-					scope: this
+					scope: this,
+					hidden: true
 				} /*,{
 					id:'btn-anPorque-' + this.idContenedor,
 					text: 'TPM - Análisis Porqué - Porqué',
@@ -1489,6 +1505,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				//handler: this.onMedicionesClick,
 				iconCls: 'bcalendar',
 				disabled: true,
+				hidden: true,
 				scope: this,
 				 menu:{
 				 items: [
@@ -1533,7 +1550,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					name: 'id_uni_cons',
 					fieldLabel: 'Plantilla',
 					allowBlank: false,
-					emptyText: 'Elija un equipo...',
+					emptyText: 'Elija un vehículo...',
 					store: new Ext.data.JsonStore({
 						url: '../../sis_mantenimiento/control/UniCons/listarUniConsPlano',
 						id: 'id_uni_cons',
@@ -1587,7 +1604,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			}, this);
 
 			this.wUC = new Ext.Window({
-				title: 'Agregar Equipo',
+				title: 'Agregar Vehículo',
 				collapsible: true,
 				maximizable: true,
 				autoDestroy: true,
@@ -1876,7 +1893,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		south:{
 			  url:'../../../sis_mantenimiento/vista/uni_cons/UniConsGral.php',
-			  title:'Equipos', 
+			  title:'Vehículos', 
 			  height:'50%',	//altura de la ventana hijo
 			  //width:'50%',		//ancho de la ventana hjo
 			  cls:'UniConsGral'
@@ -1906,7 +1923,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					name: 'id_tipo_equipo',
 					fieldLabel: 'Tipo de Equipo',
 					allowBlank: false,
-   				    emptyText:'Seleccione un Tipo de Equipo...',
+   				    emptyText:'Seleccione un Tipo de Vehículo...',
    				    store: new Ext.data.JsonStore({
 					url: '../../sis_mantenimiento/control/TipoEquipo/listarTipoEquipo',
 					id: 'id_tipo_equipo',

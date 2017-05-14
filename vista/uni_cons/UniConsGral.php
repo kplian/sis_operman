@@ -30,7 +30,8 @@ Phx.vista.UniConsGral=Ext.extend(Phx.gridInterfaz,{
 				iconCls : 'binfo',
 				disabled : false,
 				handler : this.onAbrirVentana,
-				tooltip : '<b>Cambiar Tag</b><br/>Opción restringida para el cambio de Tag de un equipo'
+				tooltip : '<b>Cambiar Tag</b><br/>Opción restringida para el cambio de Tag de un equipo',
+				hidden: true
 		});
 		
 		//para definir atributos del equipo	
@@ -71,7 +72,8 @@ Phx.vista.UniConsGral=Ext.extend(Phx.gridInterfaz,{
 				iconCls : 'bchecklist',
 				disabled : false,
 				handler : this.onBtnSubsis,
-				tooltip : '<b>Subistemas</b><br/>Subsistemas que componen al equipo'
+				tooltip : '<b>Subistemas</b><br/>Subsistemas que componen al equipo',
+				hidden: true
 		});
 		
 		this.addButton('btnOT', {
@@ -79,7 +81,8 @@ Phx.vista.UniConsGral=Ext.extend(Phx.gridInterfaz,{
 				iconCls : 'bdocuments',
 				disabled : false,
 				handler : this.onBtnOT,
-				tooltip : '<b>Histórico de OITs</b><br/>Despliegue de todos los mantenimientos del Equipo seleccionado.'
+				tooltip : '<b>Histórico de OITs</b><br/>Despliegue de todos los mantenimientos del Equipo seleccionado.',
+				hidden: true
 		});
 		
 		

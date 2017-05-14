@@ -43,7 +43,7 @@ class ACTEquipoMedicion extends ACTbase{
 		
 		$id33 = $this->objParam->getParametro('id_mediciones_mes');
 		
-		
+		var_dump($id33);exit;
 		$codigo=$id33['id_mediciones_mes'];
 		
 		

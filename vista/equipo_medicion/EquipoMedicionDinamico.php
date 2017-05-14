@@ -10,46 +10,54 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.EquipoMedicionDinamico=Ext.extend(Phx.gridInterfaz,{
-     constructor:function(config){
+	
+    constructor:function(config){
 		this.configMaestro=config;
 		this.config=config;
     	//llama al constructor de la clase padre
     	Phx.CP.loadingShow();
 	    this.storeAtributos= new Ext.data.JsonStore({
-          			url:'../../sis_mantenimiento/control/EquipoVariable/listarColumnasEquipoVariable',
-				    id: 'id_equipo_variable',
-   					root: 'datos',
-   				    totalProperty: 'total',
-   					fields: ['key','codigo_unidad_medida','id_unidad_medida','nombre_tipo_variable',
-								{name:'id_equipo_variable', type: 'numeric'},
-								{name:'valor_max', type: 'numeric'},
-								{name:'id_uni_cons', type: 'numeric'},
-								{name:'obs', type: 'string'},
-								{name:'valor_min', type: 'numeric'},
-								{name:'id_tipo_variable', type: 'numeric'}],
-						sortInfo:{
-							field: 'id_equipo_variable',
-							direction: 'ASC'
-						}});
-			//evento de error
-			this.storeAtributos.on('loadexception',this.conexionFailure);				
+          	url:'../../sis_mantenimiento/control/EquipoVariable/listarColumnasEquipoVariable',
+			id: 'id_equipo_variable',
+   			root: 'datos',
+   			totalProperty: 'total',
+   			fields: [
+   				'key','codigo_unidad_medida','id_unidad_medida','nombre_tipo_variable',
+				{name:'id_equipo_variable', type: 'numeric'},
+				{name:'valor_max', type: 'numeric'},
+				{name:'id_uni_cons', type: 'numeric'},
+				{name:'obs', type: 'string'},
+				{name:'valor_min', type: 'numeric'},
+				{name:'id_tipo_variable', type: 'numeric'}
+			],
+			sortInfo:{
+				field: 'id_equipo_variable',
+				direction: 'ASC'
+			}
+		});
+		//Evento de error
+		this.storeAtributos.on('loadexception',this.conexionFailure);				
 			
-			this.storeAtributos.load({params:{
-				                              "sort":"id_equipo_variable",
-				                              "dir":"ASC",
-				                              'id_uni_cons':config.id_uni_cons,
-				                               start:0, 
-				                               limit:500},callback:this.successConstructor,scope:this})			
+		this.storeAtributos.load({
+			params:{
+				sort: 'id_equipo_variable',
+			    dir: 'ASC',
+			    id_uni_cons: config.id_uni_cons,
+			    start: 0, 
+			    limit: 500
+			},
+			callback:this.successConstructor,
+			scope:this
+		});			
 	},		
 	
-	successConstructor:function(rec,con,res){
+	successConstructor: function(rec,con,res){
 		
 		this.recColumnas = rec;
-		this.Atributos=[];
-		this.fields=[];
-		this.id_store='id_mediciones_mes'
-		
-		this.sortInfo={
+		this.Atributos = [];
+		this.fields = [];
+		this.id_store = 'id_mediciones_mes'
+		this.sortInfo = {
 			field: 'fecha',
 			direction: 'ASC'
 		};
@@ -59,69 +67,62 @@ Phx.vista.EquipoMedicionDinamico=Ext.extend(Phx.gridInterfaz,{
 		this.fields.push('hora')
 		this.fields.push('observaciones')
 		
-		if(res)
-		{
+		if(res){
 			this.Atributos[0]={
-			//configuracion del componente
-								config:{
-										labelSeparator:'',
-										inputType:'hidden',
-										name: this.id_store
-								},
-								type:'Field',
-								form:true 
-						};
+				//Configuracionn del componente
+				config: {
+					labelSeparator:'',
+					inputType:'hidden',
+					name: this.id_store
+				},
+				type:'Field',
+				form:true 
+			};
 			
 			this.Atributos[1]={
-			//configuracion del componente
-								config:{
-										
-										name: 'fecha',
-										fieldLabel: 'Fecha',
-										allowBlank: false,
-										anchor: '100%',
-										format: 'd/m/Y',
-										renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
-								},
-								type:'DateField',
-								filters:{pfiltro:'fecha',type:'date'},
-								grid:true,
-								form:true 
-						};
+				config:{
+					name: 'fecha',
+					fieldLabel: 'Fecha',
+					allowBlank: false,
+					anchor: '100%',
+					format: 'd/m/Y',
+					renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+				},
+				type: 'DateField',
+				filters: {pfiltro:'fecha',type:'date'},
+				grid: true,
+				form: true
+			};
 						
-			this.Atributos[2]={
-			//configuracion del componente
-								config:{
-										
-										name: 'hora',
-										fieldLabel: 'Hora',
-										format:'H:i:s',
-										anchor: '100%',
-										allowBlank: false
-								},
-								type:'TimeField',
-								grid:true,
-								form:true 
-						};
+			this.Atributos[2] = {
+				config:{
+					name: 'hora',
+					fieldLabel: 'Hora',
+					format:'H:i:s',
+					anchor: '100%',
+					allowBlank: false
+				},
+				type: 'TimeField',
+				grid: true,
+				form: true 
+			};
+
 			this.Atributos[3]={
-			//configuracion del componente
-								config:{
-										
-										name: 'observaciones',
-										fieldLabel: 'Observaciones',
-										anchor: '100%',
-										allowBlank: true
-								},
-								type:'TextArea',
-								grid:true,
-								form:true 
-						};
+				config:{
+					name: 'observaciones',
+					fieldLabel: 'Observaciones',
+					anchor: '100%',
+					allowBlank: true
+				},
+				type:'TextArea',
+				grid:true,
+				form:true
+			};
 									
 			var recText = this.id_store +'#integer@fecha#date@hora#time@observaciones#varchar';			
 			
 			for (var i=0;i<rec.length;i++){
 				var configDef={};
-				
 				var codigo_col = 'col_'+rec[i].data.key;
 				
 				this.fields.push(codigo_col);
@@ -129,31 +130,32 @@ Phx.vista.EquipoMedicionDinamico=Ext.extend(Phx.gridInterfaz,{
 				
 			    recText=recText+'@'+codigo_col+'#varchar'+'@'+codigo_col+'_key#integer'
 				
-				this.Atributos.push({config:{
-									 name: codigo_col,
-									 fieldLabel: rec[i].data.nombre_tipo_variable+ ' ['+rec[i].data.codigo_unidad_medida +']',
-									 allowBlank: true,
-									 anchor: '80%',
-									 gwidth: 100,
-									 maxLength:100
-									},
-									type:'NumberField',
-									filters:{pfiltro:rec[i].data.codigo_columna,type:'string'},
-									id_grupo:1,
-									egrid:false,
-									grid:true,
-									form:true
-							});
+				this.Atributos.push({
+					config:{
+						name: codigo_col,
+						fieldLabel: rec[i].data.nombre_tipo_variable+ ' ['+rec[i].data.codigo_unidad_medida +']',
+						allowBlank: true,
+						anchor: '80%',
+						gwidth: 100,
+						maxLength:100,
+						decimalPrecision:10
+					},
+					type:'NumberField',
+					filters:{pfiltro:rec[i].data.codigo_columna,type:'string'},
+					id_grupo:1,
+					egrid:false,
+					grid:true,
+					form:true
+				});
 							
-				
-				
-				this.Atributos.push({config:{
-									 name: codigo_col+'_key',
-									 inputType:'hidden'
-									},
-									type:'Field',
-									form:true
-							});
+				this.Atributos.push({
+					config:{
+						name: codigo_col+'_key',
+						inputType:'hidden'
+					},
+					type:'Field',
+					form:true
+				});
 					
 			}
 			
@@ -178,18 +180,16 @@ Phx.vista.EquipoMedicionDinamico=Ext.extend(Phx.gridInterfaz,{
             disabled : false,
             handler : this.onButtonGrafica,
             tooltip : '<b>Gráfica</b><br/><b>Genera gráfica (La ordenación de los resultados afecta la gráfica)</b>'
-             });
+            });
         
 		
 			this.init();
-			
 					                   
 			var milisegundos=parseInt(7*24*60*60*1000);
 			var fechaActual = new Date();
 			var fechaini  = new Date();
 			fechaini.setTime(parseInt(fechaActual.getTime()-milisegundos));
  
-           
 			this.dateFechaIni.setValue(fechaini);
 			this.dateFechaFin.setValue(fechaActual);
 			
