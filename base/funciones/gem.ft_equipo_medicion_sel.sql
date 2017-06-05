@@ -863,53 +863,118 @@ begin
       
 			END LOOP;
     
-     -- 3) consulta de la tabla temporal
-    if(p_transaccion='GEM_EQMECO_SEL') then
-    	--Verifica si tiene fórmulas
-    	/*v_aux = 'select distinct
-                  tva.id_tipo_variable,
-                  tva.nombre as nombre_tipo_variable,
-                  tva.orden
-                  from gem.tequipo_variable eqv
-                  inner join gem.ttipo_variable tva on tva.id_tipo_variable = eqv.id_tipo_variable
-                  inner join gem.tuni_cons ucons on ucons.id_uni_cons = eqv.id_uni_cons
-                  where eqv.estado_reg = ''activo'' and eqv.tipo =''formula''
-                  and ucons.estado_reg = ''activo''
-                  and ucons.tipo_nodo = ''raiz''
-                  and '||v_cond||'
-                  order by tva.orden';
-        for g_registros in execute(v_aux) loop
-        	if g_registros.nombre_tipo_variable = 'Costo Total (Bs)' then
-        		v_columnas = v_columnas || ',('||v_col_04||'+'||v_col_05||'+'||v_col_06||'+'||v_col_07||'+'||v_col_08||'+'||v_col_09||'+'||v_col_10||'+'||v_col_11||'+'||v_col_12||'+'||v_col_13||'+'||v_col_14||') as costo_total'; 
-			elsif  g_registros.nombre_tipo_variable = 'Rendimiento(Km/Lt)' then
-				v_columnas = v_columnas || ',('||v_col_02||'/'||v_col_03||') as rendimiento';
-			elsif g_registros.nombre_tipo_variable = 'Factor Costo (Bs/Km)' then
-				v_columnas = v_columnas || ',(('||v_col_04||'+'||v_col_05||'+'||v_col_06||'+'||v_col_07||'+'||v_col_08||'+'||v_col_09||'+'||v_col_10||'+'||v_col_11||'+'||v_col_12||'+'||v_col_13||'+'||v_col_14||')/'||v_col_02||') as factor_costo';
-			end if;
-        end loop;*/
-    	
-    	--Define la consulta de datos
-        v_consulta:='select '||v_columnas||'
-                    from tt_mediciones_equipo_'||p_id_usuario||' med
-                    inner join gem.tuni_cons ucons on ucons.id_uni_cons = med.id_uni_cons
-                    where '||v_parametros.filtro;
-       
-        v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ||
-        			v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-    else
-        v_consulta:='select count (id_mediciones_mes)
-              		from tt_mediciones_equipo_'||p_id_usuario||' med
-                    inner join gem.tuni_cons ucons on ucons.id_uni_cons = med.id_uni_cons
-             		where '||v_parametros.filtro;
-    end if; 
+       -- 3) consulta de la tabla temporal
+      if(p_transaccion='GEM_EQMECO_SEL') then
+      	--Verifica si tiene fórmulas
+      	/*v_aux = 'select distinct
+                    tva.id_tipo_variable,
+                    tva.nombre as nombre_tipo_variable,
+                    tva.orden
+                    from gem.tequipo_variable eqv
+                    inner join gem.ttipo_variable tva on tva.id_tipo_variable = eqv.id_tipo_variable
+                    inner join gem.tuni_cons ucons on ucons.id_uni_cons = eqv.id_uni_cons
+                    where eqv.estado_reg = ''activo'' and eqv.tipo =''formula''
+                    and ucons.estado_reg = ''activo''
+                    and ucons.tipo_nodo = ''raiz''
+                    and '||v_cond||'
+                    order by tva.orden';
+          for g_registros in execute(v_aux) loop
+          	if g_registros.nombre_tipo_variable = 'Costo Total (Bs)' then
+          		v_columnas = v_columnas || ',('||v_col_04||'+'||v_col_05||'+'||v_col_06||'+'||v_col_07||'+'||v_col_08||'+'||v_col_09||'+'||v_col_10||'+'||v_col_11||'+'||v_col_12||'+'||v_col_13||'+'||v_col_14||') as costo_total'; 
+  			elsif  g_registros.nombre_tipo_variable = 'Rendimiento(Km/Lt)' then
+  				v_columnas = v_columnas || ',('||v_col_02||'/'||v_col_03||') as rendimiento';
+  			elsif g_registros.nombre_tipo_variable = 'Factor Costo (Bs/Km)' then
+  				v_columnas = v_columnas || ',(('||v_col_04||'+'||v_col_05||'+'||v_col_06||'+'||v_col_07||'+'||v_col_08||'+'||v_col_09||'+'||v_col_10||'+'||v_col_11||'+'||v_col_12||'+'||v_col_13||'+'||v_col_14||')/'||v_col_02||') as factor_costo';
+  			end if;
+          end loop;*/
+      	
+      	--Define la consulta de datos
+          v_consulta:='select '||v_columnas||'
+                      from tt_mediciones_equipo_'||p_id_usuario||' med
+                      inner join gem.tuni_cons ucons on ucons.id_uni_cons = med.id_uni_cons
+                      where '||v_parametros.filtro;
+         
+          v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ||
+          			v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+      else
+          v_consulta:='select count (id_mediciones_mes)
+                		from tt_mediciones_equipo_'||p_id_usuario||' med
+                      inner join gem.tuni_cons ucons on ucons.id_uni_cons = med.id_uni_cons
+               		where '||v_parametros.filtro;
 
-    --Devuelve la respuesta
---    raise exception 'SQL: %',v_consulta;
-    return v_consulta;
+
+      end if; 
+
+      --Devuelve la respuesta
+  --    raise exception 'SQL: %',v_consulta;
+      return v_consulta;
          
        
-end;
+    end;
 
+/*********************************
+#TRANSACCION: 'GEM_MEDSP_SEL'
+#DESCRIPCION: Consulta de datos
+#AUTOR: rcm
+#FECHA: 21/05/2017
+***********************************/
+
+elsif(p_transaccion='GEM_MEDSP_SEL')then
+     
+    begin
+      --Sentencia de la consulta
+      v_consulta:='select
+        em.id_equipo_medicion, ev.id_equipo_variable, uc.id_uni_cons, tp.id_tipo_variable,
+        em.fecha_medicion, em.medicion, em.hora, em.observaciones, em.fecha_reg,
+        uc.codigo, uc.nombre as vehiculo,
+        tp.nombre as tipo_variable
+        from gem.tequipo_medicion em
+        inner join gem.tequipo_variable ev
+        on ev.id_equipo_variable = em.id_equipo_variable
+        inner join gem.tuni_cons uc
+        on uc.id_uni_cons = ev.id_uni_cons
+        inner join gem.ttipo_variable tp
+        on tp.id_tipo_variable = ev.id_tipo_variable
+        where ';
+
+      --Definicion de la respuesta
+      v_consulta:=v_consulta||v_parametros.filtro;
+      v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+
+      --Devuelve la respuesta
+      return v_consulta;
+
+  end;
+
+/*********************************
+#TRANSACCION: 'GEM_MEDSP_CONT'
+#DESCRIPCION: Conteo de registros
+#AUTOR: rcm
+#FECHA: 21/05/2017
+***********************************/
+
+  elsif(p_transaccion='GEM_MEDSP_CONT')then
+
+    begin
+      --Sentencia de la consulta de conteo de registros
+      v_consulta:='select count(1)
+        from gem.tequipo_medicion em
+        inner join gem.tequipo_variable ev
+        on ev.id_equipo_variable = em.id_equipo_variable
+        inner join gem.tuni_cons uc
+        on uc.id_uni_cons = ev.id_uni_cons
+        inner join gem.ttipo_variable tp
+        on tp.id_tipo_variable = ev.id_tipo_variable
+        where ';
+
+      --Definicion de la respuesta
+      v_consulta:=v_consulta||v_parametros.filtro;
+
+      --Devuelve la respuesta
+      return v_consulta;
+
+    end;
+  
   else
 
     raise exception 'Transaccion inexistente';
