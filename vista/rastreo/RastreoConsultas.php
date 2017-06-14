@@ -11,7 +11,6 @@ Ext.define('Phx.vista.RastreoConsultas', {
         this.createFormPanel();
         this.setEventos();
         this.showMap();
-        //this.prueba();
     },
     createFormPanel: function(){
         //Creación de componentes del panel de parámetros
@@ -89,6 +88,16 @@ Ext.define('Phx.vista.RastreoConsultas', {
             containerScroll: true,
             border: false
         });
+
+        this.treeVehiculos.getLoader().on('loadexception', function(cmp,node,response){
+            var resp = Ext.decode(response.responseText).ROOT.detalle;
+            Ext.MessageBox.alert(response.status+' - '+response.statusText,resp.mensaje)
+        },this);
+
+        this.treeVehiculosRoutes.getLoader().on('loadexception', function(cmp,node,response){
+            var resp = Ext.decode(response.responseText).ROOT.detalle;
+            Ext.MessageBox.alert(response.status+' - '+response.statusText,resp.mensaje)
+        },this);
 
         //Mapas
         this.panelMapa = new Ext.Panel({  
@@ -189,31 +198,19 @@ Ext.define('Phx.vista.RastreoConsultas', {
             ]
         });
 
-      this.map.getView().setZoom(17);
-      this.map.getView().setCenter(ol.proj.fromLonLat([-68.131096, -16.514822]));
+        this.map.getView().setZoom(17);
+        this.map.getView().setCenter(ol.proj.fromLonLat([-68.131096, -16.514822]));
 
-      /*this.iconStyle = new ol.style.Style({
-            image: new ol.style.Icon({
-                anchor: [0.5, 46],
-                anchorXUnits: 'fraction',
-                anchorYUnits: 'pixels',
-                opacity: 0.75,
-                src: '//openlayers.org/en/v3.8.2/examples/data/icon.png'
-            }),
-            text: new ol.style.Text({
-                font: '12px Calibri,sans-serif',
-                fill: new ol.style.Fill({ color: '#000' }),
-                stroke: new ol.style.Stroke({
-                    color: '#fff', width: 2
-                }),
-                text: 'Some text'
-            })
-        });*/
+        this.map.on('click', function(e){
+            console.log('map click',e)
+            this.map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
+                console.log('ffff',feature,layer)
+            });
+        },this);
     },
     obtenerTreeIds: function(){
         //Verifica si hay algun nodo seleccionado
         var selected = this.treeVehiculos.getSelectionModel().selNode;
-        console.log('sss',selected)
         if(selected&&!selected.isRoot){
             this.obtenerGeoData(selected.id);
         }
@@ -221,6 +218,7 @@ Ext.define('Phx.vista.RastreoConsultas', {
     obtenerGeoData: function(id){
         var today = new Date();
         Phx.CP.loadingShow();
+        console.log('entra')
         Ext.Ajax.request({
             url:'../../sis_mantenimiento/control/EquipoMedicion/listarMediciones',
             params: {
@@ -234,78 +232,30 @@ Ext.define('Phx.vista.RastreoConsultas', {
                 dir:'ASC'
             },
             success: this.reloadMap,
-            failure: this.conexionFailure,
+            failure: function(response,opts){
+                Phx.CP.loadingHide();
+                var resp = Ext.decode(response.responseText).ROOT.detalle;
+                Ext.MessageBox.alert(response.status+' - '+response.statusText,resp.mensaje)
+            },
             timeout: this.timeout,
             scope: this
         });
     },
-    prueba: function(){
-        console.log('prueba');
-        this.vectorSource = new ol.source.Vector();
-        this.vectorLayer = new ol.layer.Vector({
-          source: this.vectorSource
-        });
-        var olview = new ol.View({
-            center: [0, 0],
-            zoom: 2,
-            minZoom: 2,
-            maxZoom: 20
-        });
-        this.map = new ol.Map({
-            target:  document.getElementById('map-'+this.idContenedor),
-            view: olview,
-            layers: [
-                new ol.layer.Tile({
-                    style: 'Aerial',
-                    source: new ol.source.OSM()
-                }),
-                this.vectorLayer
-            ]
-        });
-
-        this.iconStyle = new ol.style.Style({
-            image: new ol.style.Icon({
-                anchor: [0.5, 46],
-                anchorXUnits: 'fraction',
-                anchorYUnits: 'pixels',
-                opacity: 0.75,
-                src: '//openlayers.org/en/v3.8.2/examples/data/icon.png'
-            }),
-            text: new ol.style.Text({
-                font: '12px Calibri,sans-serif',
-                fill: new ol.style.Fill({ color: '#000' }),
-                stroke: new ol.style.Stroke({
-                    color: '#fff', width: 2
-                }),
-                text: 'Some text'
-            })
-        });
-
-        this.map.on('click', function(evt){
-            console.log('asasas');
-            var feature = new ol.Feature(
-                new ol.geom.Point(evt.coordinate)
-            );
-            feature.setStyle(this.iconStyle);
-            this.vectorSource.addFeature(feature);
-        },this);
-
-    },
     points: [
-    [-68.131096, -16.514822],
-      [-68.131155, -16.514339],
-      [-68.130651, -16.514051],
-      [-68.130597, -16.513516],
-      [-68.131134, -16.512745],
-      [-68.131499, -16.511222],
-      [-68.131692, -16.510554],
-      [-68.132572, -16.509258],
-      [-68.132378, -16.508393],
-      [-68.132872, -16.506706],
-      [-68.133087, -16.506861],
-      [-68.133923, -16.506418],
-      [-68.134170, -16.506737],
-      [-68.135179, -16.506737]
+        [-68.131096, -16.514822],
+        [-68.131155, -16.514339],
+        [-68.130651, -16.514051],
+        [-68.130597, -16.513516],
+        [-68.131134, -16.512745],
+        [-68.131499, -16.511222],
+        [-68.131692, -16.510554],
+        [-68.132572, -16.509258],
+        [-68.132378, -16.508393],
+        [-68.132872, -16.506706],
+        [-68.133087, -16.506861],
+        [-68.133923, -16.506418],
+        [-68.134170, -16.506737],
+        [-68.135179, -16.506737]
     ],
     reloadMap: function(resp,params){
         var data = Ext.decode(resp.responseText);
@@ -341,6 +291,13 @@ Ext.define('Phx.vista.RastreoConsultas', {
         var aux = [parseFloat(data.datos[0].latitud),parseFloat(data.datos[0].longitud)];
         this.map.getView().setZoom(17);
         this.map.getView().setCenter(ol.proj.fromLonLat(aux));
+    },
+    addFeatureClick: function(){
+        var feature = new ol.Feature(
+                new ol.geom.Point(evt.coordinate)
+            );
+        feature.setStyle(this.iconStyle);
+        this.vectorSource.addFeature(feature);
     }
 });
 </script>
