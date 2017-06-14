@@ -375,6 +375,34 @@ class MODEquipoMedicion extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+
+	function listarMediciones(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='gem.f_mediciones_sel';
+		$this->transaccion='GEM_MEDFIL_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
+		$this->setParametro('id','id','integer');	
+		$this->setParametro('fecha_ini','fecha_ini','date');	
+		$this->setParametro('fecha_fin','fecha_fin','date');
+		$this->setParametro('solo_un_registro','solo_un_registro','varchar');
+				
+		//Definicion de la lista del resultado del query
+		$this->captura('id_uni_cons','int4');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre','varchar');
+		$this->captura('fecha_medicion','date');
+		$this->captura('hora','time');
+		$this->captura('longitud','numeric');
+		$this->captura('latitud','numeric');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

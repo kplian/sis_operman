@@ -32,6 +32,12 @@ class ACTLocalizacion extends ACTbase{
 
 		$id_localizacion=$this->objParam->getParametro('id_localizacion');
 		$tipo_nodo=$this->objParam->getParametro('tipo_nodo');
+
+		/*echo '<pre>';
+		print_r($this->objParam);
+		echo '</pre>';
+		exit;*/
+
 		//RCM: solo por requerimiento de YPFB, no mostrar vehiculos
 		/*if($this->objParam->getParametro('vista')=='loc'){
 			$this->objParam->addFiltro("loc.codigo != ''VEH'' ");
@@ -41,13 +47,13 @@ class ACTLocalizacion extends ACTbase{
 		
 	
 		if($tipo_nodo != 'uni_cons' && $tipo_nodo != 'uni_cons_f' && $tipo_nodo != 'rama'){
-					if($node=='id'){
+					if($node=='id'||substr($node, 0,5)=='xnode'){
 						$this->objParam->addParametro('id_padre','%');
 					}
 					else {
 						$this->objParam->addParametro('id_padre',$id_localizacion);
 					}
-
+//echo 'zzzzzzzzzzz: '.$node;exit;
 		            
 		            $this->objFunc=$this->create('MODLocalizacion');
 					$this->res=$this->objFunc->listarLocalizacionArb($this->objParam);
@@ -85,8 +91,13 @@ class ACTLocalizacion extends ACTbase{
 					 												$arreglo);
 																	
 																	
-						/*Agregar unidades constructivas a la loccalizacion*/
+					/*Agregar unidades constructivas a la loccalizacion*/
 					$arreglo=array();
+					$arreglo_valores=array();
+
+					array_push($arreglo_valores,array('variable'=>'checked','val_ant'=>'true','val_nue'=>true));
+					array_push($arreglo_valores,array('variable'=>'checked','val_ant'=>'false','val_nue'=>false));
+					$this->res->setValores($arreglo_valores);
 						
 					array_push($arreglo,array('nombre'=>'id','valor'=>'id_localizacion'));
 					array_push($arreglo,array('nombre'=>'id_p','valor'=>'id_localizacion_fk'));
@@ -103,7 +114,8 @@ class ACTLocalizacion extends ACTbase{
 					 												
 					 												'icon'=>'../../../lib/imagenes/otros/tuc.png'
 					 												),
-					 												$arreglo);
+					 												$arreglo,
+					 												$arreglo_valores);
 				
 				   $this->res->addNivelArbol('tipo_nodo','uni_cons_f',array('leaf'=>false,
 																	'allowDelete'=>false,
@@ -112,16 +124,14 @@ class ACTLocalizacion extends ACTbase{
 					 												
 					 												'icon'=>'../../../lib/imagenes/otros/tucred.png'
 					 												),
-					 												$arreglo);
+					 												$arreglo,
+					 												$arreglo_valores);
 				
 				
 				//Se imprime el arbol en formato JSON
 		       $this->res->imprimirRespuesta($this->res->generarJson());	 
 																
-		 	}
-		else
-			{
-				//echo 'zzzzzzzzzzz: '.$tipo_nodo;exit;
+		 } else	{
 				$id_uni_cons=$this->objParam->getParametro('id_uni_cons');
 				if($tipo_nodo=='rama'){
 					$this->objParam->addParametro('id_padre',$node);
@@ -205,7 +215,6 @@ class ACTLocalizacion extends ACTbase{
 					 												$arreglo);
 				 												
 				//Se imprime el arbol en formato JSON
-				echo $this->res->generarJson(); exit;
 				$this->res->imprimirRespuesta($this->res->generarJson());
 				
 			}														
@@ -247,6 +256,107 @@ class ACTLocalizacion extends ACTbase{
 		$this->objFunc=$this->create('MODLocalizacion');
 		$this->res=$this->objFunc->SincronizarUsuarios();
 		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function listarLocalizacionArbRastreo(){
+		//Obtiene el parametro nodo enviado por la vista
+		$node=$this->objParam->getParametro('node');
+
+		$id_localizacion=$this->objParam->getParametro('id_localizacion');
+		$tipo_nodo=$this->objParam->getParametro('tipo_nodo');
+	
+		if($tipo_nodo != 'uni_cons' && $tipo_nodo != 'uni_cons_f' && $tipo_nodo != 'rama'){
+			
+			if($node=='id'||substr($node, 0,5)=='xnode'){
+				$this->objParam->addParametro('id_padre','%');
+			}
+			else {
+				$this->objParam->addParametro('id_padre',$id_localizacion);
+			}
+            
+            $this->objFunc=$this->create('MODLocalizacion');
+			$this->res=$this->objFunc->listarLocalizacionArb($this->objParam);
+			$this->res->setTipoRespuestaArbol();
+			
+			$arreglo=array();
+			
+			array_push($arreglo,array('nombre'=>'id','valor'=>'id_localizacion'));
+			array_push($arreglo,array('nombre'=>'id_p','valor'=>'id_localizacion_fk'));
+			
+			array_push($arreglo,array('nombre'=>'text','valor'=>'texto'));
+			array_push($arreglo,array('nombre'=>'cls','valor'=>'nombre'));
+			array_push($arreglo,array('nombre'=>'qtip','valores'=>'<b> #codigo#</b><br> #nombre#'));
+			
+			
+			$this->res->addNivelArbol('tipo_nodo','raiz',array('leaf'=>false,'allowDelete'=>true,'allowEdit'=>true,'cls'=>'folder','tipo_nodo'=>'raiz','icon'=>'../../../lib/imagenes/a_form.png'),$arreglo);
+			 
+			/*se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
+			  es importante que entre los resultados devueltos por la base exista la variable\
+			  tipo_dato que tenga el valor en texto = 'hoja' */
+			 														
+		 	$this->res->addNivelArbol('tipo_nodo','hijo',array('leaf'=>false,'allowDelete'=>true,'allowEdit'=>true,'tipo_nodo'=>'hijo','icon'=>'../../../lib/imagenes/a_form.png'),$arreglo);
+															
+															
+			/*Agregar unidades constructivas a la loccalizacion*/
+			$arreglo=array();
+			$arreglo_valores=array();
+
+			array_push($arreglo_valores,array('variable'=>'checked','val_ant'=>'true','val_nue'=>true));
+			array_push($arreglo_valores,array('variable'=>'checked','val_ant'=>'false','val_nue'=>false));
+			$this->res->setValores($arreglo_valores);
+				
+			array_push($arreglo,array('nombre'=>'id','valor'=>'id_localizacion'));
+			array_push($arreglo,array('nombre'=>'id_p','valor'=>'id_localizacion_fk'));
+			
+			array_push($arreglo,array('nombre'=>'text','valores'=>'<b> [#codigo#] </b>- #nombre#'));
+			array_push($arreglo,array('nombre'=>'cls','valor'=>'nombre'));
+			array_push($arreglo,array('nombre'=>'qtip','valores'=>'<b> #codigo#</b><br> #nombre#'));
+			
+			
+			$this->res->addNivelArbol('tipo_nodo','uni_cons',array('leaf'=>false,'allowDelete'=>false,'allowEdit'=>false,'cls'=>'folder','icon'=>'../../../lib/imagenes/otros/tuc.png'),$arreglo,$arreglo_valores);
+		
+		    $this->res->addNivelArbol('tipo_nodo','uni_cons_f',array('leaf'=>false,'allowDelete'=>false,'allowEdit'=>false,'cls'=>'folder','icon'=>'../../../lib/imagenes/otros/tucred.png'),$arreglo,$arreglo_valores);
+						
+		
+			//Se imprime el arbol en formato JSON
+	        $this->res->imprimirRespuesta($this->res->generarJson());	 
+																
+		} else	{
+			$id_uni_cons=$this->objParam->getParametro('id_uni_cons');
+			if($tipo_nodo=='rama'){
+				$this->objParam->addParametro('id_padre',$node);
+			} else{
+				$this->objParam->addParametro('id_padre',$id_uni_cons);
+			}
+			
+			$this->objParam->addParametro('tipo','uc');
+			$this->objFunSeguridad=$this->create('MODUniCons');
+			$this->res=$this->objFunSeguridad->listarUniCons($this->objParam);
+			
+			$this->res->setTipoRespuestaArbol();
+			
+			$arreglo=array();
+			//array_push($arreglo,array('nombre'=>'id','valor'=>'id_gui'));
+			
+			array_push($arreglo,array('nombre'=>'id','valor'=>'id_uni_cons'));
+			array_push($arreglo,array('nombre'=>'id_p','valor'=>'id_unic_cons_padre'));
+		   	// array_push($arreglo,array('nombre'=>'text','valor'=>'text'));
+			
+			/*se ande un nivel al arbol incluyendo con tido de nivel carpeta con su arreglo de equivalencias
+			  es importante que entre los resultados devueltos por la base exista la variable\
+			  tipo_dato que tenga el valor en texto = 'carpeta' */
+			
+			$this->res->addNivelArbol('tipo_nodo','base',array('leaf'=>false,'allowDelete'=>true,'allowEdit'=>true,'cls'=>'folder'),$arreglo);
+
+			$this->res->addNivelArbol('tipo_nodo','rama',array('leaf'=>false,'allowDelete'=>false,'allowEdit'=>false,'cls'=>'folder','icon'=>'../../../lib/imagenes/otros/tuc.png'),$arreglo);
+			
+			   $this->res->addNivelArbol('tipo_nodo','rama',array('leaf'=>false,'allowDelete'=>false,'allowEdit'=>false,'cls'=>'folder','icon'=>'../../../lib/imagenes/otros/tucred.png'),$arreglo);
+			 												
+			//Se imprime el arbol en formato JSON
+//			echo $this->res->generarJson(); exit;
+			$this->res->imprimirRespuesta($this->res->generarJson());
+			
+		}				
 	}
 
 }

@@ -58,7 +58,7 @@ Ext.define('Phx.vista.Rastreo',{
 	    var route = [
 			      [-68.131096, -16.514822],
 			      [-68.131155, -16.514339],
-			      [-68.130651, -16.514051],
+			      [-68.130651, -16.514051]/*,
 			      [-68.130597, -16.513516],
 			      [-68.131134, -16.512745],
 			      [-68.131499, -16.511222],
@@ -69,7 +69,7 @@ Ext.define('Phx.vista.Rastreo',{
 			      [-68.133087, -16.506861],
 			      [-68.133923, -16.506418],
 			      [-68.134170, -16.506737],
-			      [-68.135179, -16.506737]
+			      [-68.135179, -16.506737]*/
 			    ];
 			    
 		//Create empty vector
@@ -98,6 +98,8 @@ Ext.define('Phx.vista.Rastreo',{
 	        src: 'http://openlayers.org/en/v3.9.0/examples/data/icon.png'
 	      }))
 	    });
+
+	    console.log('iconstyle',iconStyle)
 	    
 	    //add the feature vector to the layer vector, and apply a style to whole layer
 	    var vectorLayer = new ol.layer.Vector({

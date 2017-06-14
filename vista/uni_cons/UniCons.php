@@ -129,7 +129,7 @@ Phx.vista.UniCons=Ext.extend(Phx.arbInterfaz,{
 		
 		this.rootVisible=false;
 		
-        this.tbar.items.get('b-new-' + this.idContenedor).disable();
+        this.tbar.items.get('b-new-' + this.idContenedor).enable();
 		this.getBoton('btnAtrib').disable();
 		
 		//Creación de ventana para adición de plantillas

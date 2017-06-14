@@ -181,6 +181,28 @@ BEGIN
 			return v_consulta;
 
 		end;
+	/*********************************    
+ 	#TRANSACCION:  'GEM_GEO_SEL'
+ 	#DESCRIPCION:	Devuelve el listado de los datoa georeferenciados recursivamente a partir de un ID de la localizacion
+ 	#AUTOR:			RCM
+ 	#FECHA:			14-06-2012 03:48:41
+	***********************************/
+
+	elsif(p_transaccion='GEM_GEO_SEL') then
+
+		begin
+
+			--Verificar existencia del id
+			if not exists(select 1 from gem.tlocalizacion
+						where id_localizacion = v_parametros.id) then
+				raise exception 'No se encuentran registros';
+			end if;
+
+			--Obtencion recursiva de ids
+			v_ids = gem.f_get_id_localizaciones(v_parametros.id);
+
+
+		end
 					
 	else
 					     
