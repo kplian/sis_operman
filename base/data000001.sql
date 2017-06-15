@@ -4095,3 +4095,33 @@ VALUES (617, E'RECOATING S.R.L.', E'persona juridica', E'157870022', NULL, NULL,
 INSERT INTO gem.prov_aux ("id", "razon_social", "tipo", "nit", "responsable", "direccion", "telefono", "fax", "celular", "correo", "localidad", "id_lugar", "id_persona", "id_institucion")
 VALUES (714, E'LIBRERÍA Y PAPELERIA VICTORIA-ROBERT RICHART SEJAS URQUIETA', E'persona juridica', E'', E'ROBERT SEJAS URQUIETA', NULL, E'10793446', E'455377', E'', NULL, E'Santa Cruz', 2, 3914, 5145);
 /***********************************F-DAT-RCM-GEM-0-16/08/2013****************************************/
+
+/***********************************I-DAT-RCM-GEM-0-03/07/2017****************************************/
+--Modifica nombre del menú
+select pxp.f_insert_tgui ('Rastreo Satelital', '', 'GEM', 'si', 1, '', 1, '../../../lib/imagenes/gema32x32.png', '', 'GEM');
+--Oculta opciones del menú
+update segu.tgui set visible = 'no' where codigo_gui = 'GEM.1';
+update segu.tgui set visible = 'no' where codigo_gui = 'GEM.2';
+update segu.tgui set visible = 'no' where codigo_gui = 'GEM.3';
+update segu.tgui set visible = 'no' where codigo_gui = 'GEM.4';
+--Crea nuevas opciones en el menú
+select pxp.f_insert_tgui ('Ubicación de Vehículos', 'Búsqueda de vehículos por diferentes criterios', 'RAS.3', 'si', 1, '', 2, '', '', 'GEM');
+select pxp.f_insert_tgui ('Tipos de Vehículos', 'Registro de Tipos de Vehículos', 'RAS.1', 'si', 2, 'sis_mantenimiento/vista/tipo_equipo/TipoEquipo.php', 2, '', 'TipoEquipo', 'GEM');
+select pxp.f_insert_tgui ('Plantilla de Vehículos', 'Definición de plantilla de equipos', 'RAS.5', 'si', 3, 'sis_mantenimiento/vista/uni_cons/UniCons.php', 2, '', 'UniCons', 'GEM');
+select pxp.f_insert_tgui ('Condutores', 'Registro Conductores', 'RAS.4', 'si', 4, 'sis_mantenimiento/vista/conductor/Conductor.php', 2, '', 'Conductor', 'GEM');
+select pxp.f_insert_tgui ('Vehículos', 'Registro de Vehículos', 'RAS.2', 'si', 5, 'sis_mantenimiento/vista/localizacion/Localizacion.php', 2, '', 'Localizacion', 'GEM');
+select pxp.f_insert_tgui ('Rastreo', 'Rastreo', 'RAS.9', 'si', 1, 'sis_mantenimiento/vista/rastreo/Rastreo.php', 3, '', 'Rastreo', 'GEM');
+select pxp.f_insert_tgui ('Posiciones capturadas', 'Posiciones capturadas', 'RAS.6', 'si', 2, 'sis_mantenimiento/vista/uni_cons/UniConsOperador.php', 3, '', 'UniConsOperador', 'GEM');
+select pxp.f_insert_tgui ('Datos sin Procesar', 'Datos sin Procesar', 'RAS.7', 'si', 3, 'sis_mantenimiento/vista/equipo_medicion/EquipoMedicionSP.php', 3, '', 'EquipoMedicionSP', 'GEM');
+select pxp.f_insert_tgui ('Consultas', 'Consultas', 'RAS.8', 'si', 4, 'sis_mantenimiento/vista/rastreo/RastreoConsultas.php', 3, '', 'RastreoConsultas', 'GEM');
+--Creación de árbol de menú
+select pxp.f_insert_testructura_gui ('RAS.3', 'GEM');
+select pxp.f_insert_testructura_gui ('RAS.1', 'GEM');
+select pxp.f_insert_testructura_gui ('RAS.5', 'GEM');
+select pxp.f_insert_testructura_gui ('RAS.4', 'GEM');
+select pxp.f_insert_testructura_gui ('RAS.2', 'GEM');
+select pxp.f_insert_testructura_gui ('RAS.6', 'RAS.3');
+select pxp.f_insert_testructura_gui ('RAS.7', 'RAS.3');
+select pxp.f_insert_testructura_gui ('RAS.8', 'RAS.3');
+select pxp.f_insert_testructura_gui ('RAS.9', 'RAS.3');
+/***********************************F-DAT-RCM-GEM-0-03/07/2017****************************************/
