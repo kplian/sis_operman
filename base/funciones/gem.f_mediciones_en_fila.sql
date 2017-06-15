@@ -2,7 +2,8 @@ CREATE OR REPLACE FUNCTION gem.f_mediciones_en_fila (
   p_fecha_ini date,
   p_fecha_fin date,
   p_ids_loc varchar,
-  p_id integer,
+  p_id integer, --si el tipo es uc es id_uni_cons, caso contrario es id_localizacion
+  p_tipo varchar, --loc o uc
   p_solo_un_registro varchar = 'no'::character varying
 )
 RETURNS SETOF record AS
@@ -31,7 +32,7 @@ BEGIN
             hora time,';
     
     --Obtencion de los tipos de variables registrados
-    v_cols = gem.f_mediciones_get_cols(p_id, p_fecha_ini, p_fecha_fin,p_solo_un_registro);
+    v_cols = gem.f_mediciones_get_cols(p_id, p_fecha_ini, p_fecha_fin, p_tipo, p_solo_un_registro);
     
     --Finaliza la sentencia de creacion de tabla temporal
     v_sql = v_sql || v_cols || ') on commit drop;';
@@ -42,6 +43,7 @@ BEGIN
     v_tmp = 'create temp table tt_geodata_resp ('||v_sql;
     execute(v_tmp);
     
+    --Consulta basica
     v_sql1 = 'select distinct
             tv.id_tipo_variable, tv.nombre
             from gem.tequipo_medicion em
@@ -51,8 +53,16 @@ BEGIN
             on uc.id_uni_cons = ev.id_uni_cons
             inner join gem.ttipo_variable tv
             on tv.id_tipo_variable = ev.id_tipo_variable
-            where uc.id_localizacion in ('||p_ids_loc||')';
+            where ';
 
+    --Filtro por tipo
+    if p_tipo = 'uc' then
+        v_sql1 = v_sql1||' uc.id_uni_cons = '||p_id;
+    else
+        v_sql1 = v_sql1||' uc.id_localizacion in ('||p_ids_loc||')';
+    end if;
+
+    --Filtro si es solo el ultimo registro
     if p_solo_un_registro = 'si' then
         v_sql1 = v_sql1 || ' and em.fecha_medicion <= '''||p_fecha_fin||'''';
     else

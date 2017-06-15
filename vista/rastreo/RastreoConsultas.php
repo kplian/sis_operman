@@ -211,18 +211,29 @@ Ext.define('Phx.vista.RastreoConsultas', {
     obtenerTreeIds: function(){
         //Verifica si hay algun nodo seleccionado
         var selected = this.treeVehiculos.getSelectionModel().selNode;
+        console.log('node',selected)
         if(selected&&!selected.isRoot){
-            this.obtenerGeoData(selected.id);
+            var obj={};
+            if(selected.attributes.id_uni_cons){
+                obj.tipo='uc';
+                obj.id_uni_cons = selected.attributes.id_uni_cons;
+            } else {
+                obj.tipo='loc';
+                obj.id_localizacion = selected.attributes.id_localizacion;
+            }
+            console.log('obj',obj)
+            this.obtenerGeoData(obj);
         }
     },
-    obtenerGeoData: function(id){
+    obtenerGeoData: function(obj){
         var today = new Date();
         Phx.CP.loadingShow();
-        console.log('entra')
         Ext.Ajax.request({
             url:'../../sis_mantenimiento/control/EquipoMedicion/listarMediciones',
             params: {
-                id: id,
+                id_localizacion: obj.id_localizacion,
+                id_uni_cons: obj.id_uni_cons,
+                tipo: obj.tipo,
                 fecha_ini: today.format('d-m-Y'),
                 fecha_fin: today.format('d-m-Y'),
                 solo_un_registro: 'si',
@@ -288,9 +299,11 @@ Ext.define('Phx.vista.RastreoConsultas', {
             feature.setStyle(iconStyle);
             this.vectorSource.addFeature(feature);
         }
-        var aux = [parseFloat(data.datos[0].latitud),parseFloat(data.datos[0].longitud)];
-        this.map.getView().setZoom(17);
-        this.map.getView().setCenter(ol.proj.fromLonLat(aux));
+        if(data&&data.datos[0]&&data.datos[0].latitud&&data.datos[0].longitud){
+            var aux = [parseFloat(data.datos[0].latitud),parseFloat(data.datos[0].longitud)];
+            this.map.getView().setZoom(17);
+            this.map.getView().setCenter(ol.proj.fromLonLat(aux));    
+        }
     },
     addFeatureClick: function(){
         var feature = new ol.Feature(

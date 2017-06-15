@@ -47,23 +47,65 @@ BEGIN
     begin
      
         --Verificar existencia del id
-        if not exists(select 1 from gem.tlocalizacion
+        /*if not exists(select 1 from gem.tlocalizacion
                     where id_localizacion = v_parametros.id) then
             raise exception 'No se encuentran registros';
+        end if;*/
+
+        --Verifica si se envio id_uni_cons que prevalece sobre el id_localizacion
+        if v_parametros.tipo = 'uc' then
+
+          v_ids = v_parametros.id_uni_cons;
+          --Obtencion de los tipos de variables registrados
+
+          v_cols = gem.f_mediciones_get_cols(v_parametros.id_uni_cons, v_parametros.fecha_ini,v_parametros.fecha_fin,v_parametros.tipo,v_parametros.solo_un_registro);
+          raise notice 'QQ: %',v_cols;
+          --Sentencia de la consulta
+
+          v_consulta:='select
+                      *
+                      from gem.f_mediciones_en_fila(
+                      '''||v_parametros.fecha_ini||''',
+                      '''||v_parametros.fecha_fin||''',
+                      '''||v_ids||''',
+                      '||v_parametros.id_uni_cons||',
+                      '''||v_parametros.tipo||''',
+                      '''||v_parametros.solo_un_registro||''') 
+                      as (id_uni_cons integer, codigo varchar, descripcion varchar, fecha_medicion date,hora time';
+                      
+          if v_cols = '' then
+            v_consulta = v_consulta||') where ';
+          else
+            v_consulta = v_consulta||','||v_cols||') where ';
+          end if;
+
+        else
+          --Obtencion recursiva de ids
+          v_ids = gem.f_get_id_localizaciones(v_parametros.id_localizacion);
+          --Obtencion de los tipos de variables registrados
+          v_cols = gem.f_mediciones_get_cols(v_parametros.id_localizacion, v_parametros.fecha_ini,v_parametros.fecha_fin,v_parametros.tipo,v_parametros.solo_un_registro);
+          
+          --Sentencia de la consulta
+          v_consulta:='select
+                      *
+                      from gem.f_mediciones_en_fila(
+                      '''||v_parametros.fecha_ini||''',
+                      '''||v_parametros.fecha_fin||''',
+                      '''||v_ids||''',
+                      '||v_parametros.id_localizacion||',
+                      '''||v_parametros.tipo||''',
+                      '''||v_parametros.solo_un_registro||''') 
+                      as (id_uni_cons integer, codigo varchar, descripcion varchar, fecha_medicion date,hora time';
+          
+          if v_cols = '' then
+            v_consulta = v_consulta||') where ';
+          else
+            v_consulta = v_consulta||','||v_cols||') where ';
+          end if;
+          
         end if;
 
-        --Obtencion recursiva de ids
-        v_ids = gem.f_get_id_localizaciones(v_parametros.id);
-
-        --Obtencion de los tipos de variables registrados
-        v_cols = gem.f_mediciones_get_cols(v_parametros.id, v_parametros.fecha_ini,v_parametros.fecha_fin,v_parametros.solo_un_registro);
-
-        --Sentencia de la consulta
-        v_consulta:='select
-                      *
-                      from gem.f_mediciones_en_fila('''||v_parametros.fecha_ini||''','''||v_parametros.fecha_fin||''','''||v_ids||''','||v_parametros.id||','''||v_parametros.solo_un_registro||''') 
-                      as (id_uni_cons integer, codigo varchar, descripcion varchar, fecha_medicion date,hora time,'||v_cols||')
-                      where ';
+        
 
         --Definicion de la respuesta
         v_consulta:=v_consulta||v_parametros.filtro;
@@ -86,25 +128,61 @@ BEGIN
         begin
 
           --Verificar existencia del id
-          if not exists(select 1 from gem.tlocalizacion
+          /*if not exists(select 1 from gem.tlocalizacion
                       where id_localizacion = v_parametros.id) then
               raise exception 'No se encuentran registros';
+          end if;*/
+
+          --Verifica si se envio id_uni_cons que prevalece sobre el id_localizacion
+          if v_parametros.tipo = 'uc' then
+            v_ids = v_parametros.id_uni_cons;
+            --Obtencion de los tipos de variables registrados
+            v_cols = gem.f_mediciones_get_cols(v_parametros.id_uni_cons, v_parametros.fecha_ini,v_parametros.fecha_fin,v_parametros.tipo,v_parametros.solo_un_registro);
+            --Sentencia de la consulta de conteo de registros
+            v_consulta:='select count(1)
+                      from gem.f_mediciones_en_fila(
+                      '''||v_parametros.fecha_ini||''',
+                      '''||v_parametros.fecha_fin||''',
+                      '''||v_ids||''',
+                      '||v_parametros.id_uni_cons||',
+                      '''||v_parametros.tipo||''',
+                      '''||v_parametros.solo_un_registro||''') 
+                      as (id_uni_cons integer, codigo varchar, nombre varchar, fecha_medicion date,hora time';
+                      
+            if v_cols = '' then
+              v_consulta = v_consulta||') where ';
+            else
+              v_consulta = v_consulta||','||v_cols||') where ';
+            end if;
+            
+          else
+            --Obtencion recursiva de ids
+            v_ids = gem.f_get_id_localizaciones(v_parametros.id_localizacion);
+            --Obtencion de los tipos de variables registrados
+            v_cols = gem.f_mediciones_get_cols(v_parametros.id_localizacion, v_parametros.fecha_ini,v_parametros.fecha_fin,v_parametros.tipo,v_parametros.solo_un_registro);
+            raise notice 'tttt %',v_cols;
+             --Sentencia de la consulta de conteo de registros
+            v_consulta:='select count(1)
+                      from gem.f_mediciones_en_fila(
+                      '''||v_parametros.fecha_ini||''',
+                      '''||v_parametros.fecha_fin||''',
+                      '''||v_ids||''',
+                      '||v_parametros.id_localizacion||',
+                      '''||v_parametros.tipo||''',
+                      '''||v_parametros.solo_un_registro||''') 
+                      as (id_uni_cons integer, codigo varchar, nombre varchar, fecha_medicion date,hora time';
+                      
+            if v_cols = '' then
+              v_consulta = v_consulta||') where ';
+            else
+              v_consulta = v_consulta||','||v_cols||') where ';
+            end if;
           end if;
 
-          --Obtencion recursiva de ids
-          v_ids = gem.f_get_id_localizaciones(v_parametros.id);
-
-          --Obtencion de los tipos de variables registrados
-          v_cols = gem.f_mediciones_get_cols(v_parametros.id, v_parametros.fecha_ini,v_parametros.fecha_fin,v_parametros.solo_un_registro);
         
-          --Sentencia de la consulta de conteo de registros
-          v_consulta:='select count(1)
-                      from gem.f_mediciones_en_fila('''||v_parametros.fecha_ini||''','''||v_parametros.fecha_fin||''','''||v_ids||''','||v_parametros.id||','''||v_parametros.solo_un_registro||''') 
-                      as (id_uni_cons integer, codigo varchar, nombre varchar, fecha_medicion date,hora time,'||v_cols||')
-                      where ';
-
           --Definicion de la respuesta
           v_consulta:=v_consulta||v_parametros.filtro;
+          RAISE NOTICE 'ww: %',v_consulta;
 
           --Devuelve la respuesta
           return v_consulta;

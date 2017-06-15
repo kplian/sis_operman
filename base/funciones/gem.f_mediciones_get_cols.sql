@@ -1,7 +1,8 @@
 CREATE OR REPLACE FUNCTION gem.f_mediciones_get_cols (
-  p_id integer,
+  p_id integer,--si el tipo es uc es id_uni_cons, caso contrario es id_localizacion
   p_fecha_ini date,
   p_fecha_fin date,
+  p_tipo varchar, --loc o uc
   p_solo_un_registro varchar = 'no'::character varying
 )
 RETURNS varchar AS
@@ -35,13 +36,19 @@ BEGIN
     v_nombre_funcion = 'gem.f_mediciones_get_cols';
     
     --Verificar existencia del id
-    if not exists(select 1 from gem.tlocalizacion
+    /*if not exists(select 1 from gem.tlocalizacion
                 where id_localizacion = p_id) then
         raise exception 'No se encuentran registros';
+    end if;*/
+
+    if p_tipo = 'uc' then
+        v_ids = p_id;
+    else
+        --Obtencion recursiva de ids
+        v_ids = gem.f_get_id_localizaciones(p_id);
     end if;
 
-    --Obtencion recursiva de ids
-    v_ids = gem.f_get_id_localizaciones(p_id);
+    --Inicializacion
     v_cols='';
     
     --Obtencion de los tipos de variables registrados
@@ -56,6 +63,12 @@ BEGIN
             on tv.id_tipo_variable = ev.id_tipo_variable
             where uc.id_localizacion in ('||v_ids||')';
 
+    if p_tipo = 'uc' then
+        v_sql = v_sql ||'uc.id_uni_cons = '||v_ids;
+    else
+        v_sql = v_sql ||'uc.id_localizacion in ('||v_ids||')';
+    end if;
+
     if p_solo_un_registro = 'si' then
         v_sql = v_sql || ' and em.fecha_medicion <= '''||p_fecha_fin||'''';
     else
@@ -65,8 +78,15 @@ BEGIN
     for v_rec in execute(v_sql) loop
         v_cols = v_cols || lower(v_rec.nombre) || ' numeric'|| ',';
     end loop;
+
+    --Verifica si no hay mediciones, y predefine a latitud y longitud
+    if v_cols is null or v_cols '' then
+        v_cols = longitud numeric, latitud numeric;
+    else
+        v_cols = substr(v_cols,0,length(v_cols));
+    end if;
     
-    v_cols = substr(v_cols,0,length(v_cols));
+    
     
     --Finaliza la sentencia de creacion de tabla temporal
     return v_cols;

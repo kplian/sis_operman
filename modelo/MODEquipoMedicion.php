@@ -382,9 +382,11 @@ class MODEquipoMedicion extends MODbase{
 		$this->transaccion='GEM_MEDFIL_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
-		$this->setParametro('id','id','integer');	
+		$this->setParametro('id_localizacion','id_localizacion','integer');	
+		$this->setParametro('id_uni_cons','id_uni_cons','integer');	
 		$this->setParametro('fecha_ini','fecha_ini','date');	
 		$this->setParametro('fecha_fin','fecha_fin','date');
+		$this->setParametro('tipo','tipo','varchar');
 		$this->setParametro('solo_un_registro','solo_un_registro','varchar');
 				
 		//Definicion de la lista del resultado del query
