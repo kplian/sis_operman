@@ -211,7 +211,6 @@ Ext.define('Phx.vista.RastreoConsultas', {
     obtenerTreeIds: function(){
         //Verifica si hay algun nodo seleccionado
         var selected = this.treeVehiculos.getSelectionModel().selNode;
-        console.log('node',selected)
         if(selected&&!selected.isRoot){
             var obj={};
             if(selected.attributes.id_uni_cons){
@@ -221,7 +220,6 @@ Ext.define('Phx.vista.RastreoConsultas', {
                 obj.tipo='loc';
                 obj.id_localizacion = selected.attributes.id_localizacion;
             }
-            console.log('obj',obj)
             this.obtenerGeoData(obj);
         }
     },
@@ -270,9 +268,9 @@ Ext.define('Phx.vista.RastreoConsultas', {
     ],
     reloadMap: function(resp,params){
         var data = Ext.decode(resp.responseText);
+        this.vectorSource = new ol.source.Vector();
         Phx.CP.loadingHide();
         for(var i=0;i<data.datos.length;i++){
-            console.log('data',data.datos[i])
             var aux = [parseFloat(data.datos[i].latitud),parseFloat(data.datos[i].longitud)];
             var feature = new ol.Feature(
               new ol.geom.Point(ol.proj.fromLonLat(aux))
