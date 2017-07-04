@@ -1487,4 +1487,18 @@ CREATE TABLE gem.tconductor (
 ) INHERITS (pxp.tbase)
 
 WITH (oids = true);
+
+CREATE TABLE gem.tlicencia (
+  id_licencia SERIAL,
+  id_conductor INTEGER NOT NULL,
+  tipo VARCHAR(20),
+  nro_licencia VARCHAR(30),
+  fecha_exp DATE,
+  fecha_curso DATE,
+  calificacion_curso NUMERIC(18,2),
+  fecha_autoriz DATE,
+  CONSTRAINT pk_tlicencia PRIMARY KEY(id_licencia)
+) INHERITS (pxp.tbase)
+
+WITH (oids = true);
 /***********************************F-SCP-RCM-GEM-0-04/07/2017*****************************************/
