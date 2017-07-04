@@ -4108,7 +4108,7 @@ update segu.tgui set visible = 'no' where codigo_gui = 'GEM.4';
 select pxp.f_insert_tgui ('Ubicación de Vehículos', 'Búsqueda de vehículos por diferentes criterios', 'RAS.3', 'si', 1, '', 2, '', '', 'GEM');
 select pxp.f_insert_tgui ('Tipos de Vehículos', 'Registro de Tipos de Vehículos', 'RAS.1', 'si', 2, 'sis_mantenimiento/vista/tipo_equipo/TipoEquipo.php', 2, '', 'TipoEquipo', 'GEM');
 select pxp.f_insert_tgui ('Plantilla de Vehículos', 'Definición de plantilla de equipos', 'RAS.5', 'si', 3, 'sis_mantenimiento/vista/uni_cons/UniCons.php', 2, '', 'UniCons', 'GEM');
-select pxp.f_insert_tgui ('Condutores', 'Registro Conductores', 'RAS.4', 'si', 4, 'sis_mantenimiento/vista/uni_cons/UniCons.php', 2, '', 'UniCons', 'GEM');
+select pxp.f_insert_tgui ('Condutores', 'Registro Conductores', 'RAS.4', 'si', 4, 'sis_mantenimiento/vista/conductor/Conductor.php', 2, '', 'Conductor', 'GEM');
 select pxp.f_insert_tgui ('Vehículos', 'Registro de Vehículos', 'RAS.2', 'si', 5, 'sis_mantenimiento/vista/localizacion/Localizacion.php', 2, '', 'Localizacion', 'GEM');
 select pxp.f_insert_tgui ('Rastreo', 'Rastreo', 'RAS.9', 'si', 1, 'sis_mantenimiento/vista/rastreo/Rastreo.php', 3, '', 'Rastreo', 'GEM');
 select pxp.f_insert_tgui ('Posiciones capturadas', 'Posiciones capturadas', 'RAS.6', 'si', 2, 'sis_mantenimiento/vista/uni_cons/UniConsOperador.php', 3, '', 'UniConsOperador', 'GEM');
